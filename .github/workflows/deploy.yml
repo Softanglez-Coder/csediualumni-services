@@ -117,4 +117,4 @@ jobs:
       - name: Verify Deployment
         run: |
           sleep 10
-          curl -f http://${{ secrets.EC2_HOST }}:3000 || exit 1
+          curl -f https://api.csediualumni.com || curl -f http://${{ secrets.EC2_HOST }}:3000 || exit 1

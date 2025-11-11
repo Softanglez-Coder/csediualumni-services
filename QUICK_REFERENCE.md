@@ -120,8 +120,8 @@ docker stats
 ## URLs
 
 - **Local Development:** http://localhost:3000
-- **Production (EC2):** http://your-ec2-ip:3000
-- **With Domain:** https://your-domain.com
+- **Production API:** https://api.csediualumni.com
+- **EC2 Direct Access:** http://your-ec2-ip:3000
 
 ## Environment Variables
 

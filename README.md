@@ -1,98 +1,130 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🚀 CSE DIU Alumni Services API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+RESTful API backend for CSE DIU Alumni platform built with NestJS.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+**Production URL:** [https://api.csediualumni.com](https://api.csediualumni.com)
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 📋 Table of Contents
 
-## Project setup
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Quick Start](#quick-start)
+- [Deployment](#deployment)
+- [Documentation](#documentation)
 
-```bash
-$ npm install
-```
+## ✨ Features
 
-## Compile and run the project
+- 🏗️ Built with NestJS framework
+- 🐳 Fully containerized with Docker
+- 🔄 CI/CD pipeline with GitHub Actions
+- 🔒 SSL/HTTPS enabled with Let's Encrypt
+- 📊 Health monitoring and logging
+- 🚀 Auto-deployment to AWS EC2
+- 🌐 Custom domain: **api.csediualumni.com**
 
-```bash
-# development
-$ npm run start
+## 🛠️ Tech Stack
 
-# watch mode
-$ npm run start:dev
+- **Framework:** [NestJS](https://nestjs.com/)
+- **Runtime:** Node.js 20
+- **Containerization:** Docker & Docker Compose
+- **CI/CD:** GitHub Actions
+- **Hosting:** AWS EC2 (Ubuntu 22.04)
+- **Reverse Proxy:** Nginx
+- **SSL:** Let's Encrypt (Certbot)
 
-# production mode
-$ npm run start:prod
-```
+## 🚀 Quick Start
 
-## Run tests
+### Local Development
 
 ```bash
-# unit tests
-$ npm run test
+# Install dependencies
+npm install
 
-# e2e tests
-$ npm run test:e2e
+# Copy environment variables
+cp .env.example .env
 
-# test coverage
-$ npm run test:cov
+# Run in development mode
+npm run start:dev
+
+# API will be available at http://localhost:3000
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Using Docker
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Build and run
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop
+docker-compose down
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 📦 Available Scripts
 
-## Resources
+```bash
+npm run start:dev      # Development with hot-reload
+npm run build          # Build for production
+npm run test           # Run tests
+npm run lint           # Run linter
+npm run format         # Format code
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+## 🌐 Deployment
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Automatic Deployment (CI/CD)
 
-## Support
+Push to `main` branch triggers automatic deployment:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+1. ✅ Runs tests and linting
+2. 🏗️ Builds Docker image
+3. 📦 Pushes to Docker Hub
+4. 🚀 Deploys to AWS EC2
+5. ✓ Verifies deployment
 
-## Stay in touch
+### First-Time Setup
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+1. **Launch EC2 Instance** (Ubuntu 22.04)
+2. **Configure DNS:** Point `api.csediualumni.com` to EC2 IP
+3. **Run Setup Scripts:**
+   ```bash
+   ./scripts/ec2-setup.sh
+   ./scripts/setup-nginx.sh
+   ```
+4. **Configure GitHub Secrets**
+5. **Push to deploy**
 
-## License
+For detailed instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## 📚 Documentation
+
+- 📖 [DEPLOYMENT.md](./DEPLOYMENT.md) - Complete deployment guide
+- 🔧 [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) - Common commands
+- 🐳 [Dockerfile](./Dockerfile) - Docker configuration
+- ⚙️ [CI/CD Workflow](.github/workflows/deploy.yml) - GitHub Actions
+
+## 🏗️ Project Structure
+
+```
+csediualumni-services/
+├── src/                 # Application source
+├── scripts/            # Deployment scripts
+├── nginx/              # Nginx configuration
+├── .github/workflows/  # CI/CD pipelines
+└── test/              # Tests
+```
+
+## 🐛 Issues & Support
+
+- Create an issue on [GitHub](https://github.com/Softanglez-Coder/csediualumni-services/issues)
+- Check [DEPLOYMENT.md](./DEPLOYMENT.md) for troubleshooting
+
+---
+
+**Live API:** [https://api.csediualumni.com](https://api.csediualumni.com)
+
+Built with [NestJS](https://nestjs.com/) for CSE DIU Alumni Community

@@ -7,7 +7,7 @@ This guide will help you deploy the NestJS application to AWS EC2 using the CI/C
 - AWS Account
 - GitHub Account
 - Docker Hub Account
-- Domain name (optional, for production)
+- Domain: **api.csediualumni.com** configured to point to your EC2 instance
 
 ## 1. AWS EC2 Setup
 
@@ -48,7 +48,35 @@ This guide will help you deploy the NestJS application to AWS EC2 using the CI/C
    ssh -i your-key.pem ubuntu@your-ec2-public-ip
    ```
 
-## 2. GitHub Secrets Configuration
+## 2. DNS Configuration
+
+### Set up Domain Name
+
+1. **Get your EC2 Public IP:**
+   - From AWS Console → EC2 → Instances → Select your instance
+   - Note the **Public IPv4 address**
+
+2. **Configure DNS A Record:**
+   - Go to your domain registrar or DNS provider (e.g., Cloudflare, Route53, Namecheap)
+   - Add an A record:
+     - **Type:** A
+     - **Name:** api
+     - **Value:** Your EC2 Public IPv4 address
+     - **TTL:** 300 (or Auto)
+
+3. **Verify DNS Propagation:**
+
+   ```bash
+   # Check if DNS is resolving
+   dig api.csediualumni.com
+
+   # Or use nslookup
+   nslookup api.csediualumni.com
+   ```
+
+   Wait for DNS to propagate (usually 5-30 minutes, can take up to 48 hours).
+
+## 3. GitHub Secrets Configuration
 
 Add the following secrets to your GitHub repository:
 
@@ -73,7 +101,7 @@ cat your-key.pem
 
 Copy the entire content including `-----BEGIN RSA PRIVATE KEY-----` and `-----END RSA PRIVATE KEY-----`
 
-## 3. Docker Hub Setup
+## 4. Docker Hub Setup
 
 1. Create account at https://hub.docker.com
 2. Create a repository named `csediualumni-services`
@@ -81,7 +109,7 @@ Copy the entire content including `-----BEGIN RSA PRIVATE KEY-----` and `-----EN
    - Account Settings → Security → New Access Token
    - Save token as `DOCKER_PASSWORD` secret
 
-## 4. Environment Variables
+## 5. Environment Variables
 
 ### On EC2 Instance:
 
@@ -106,7 +134,7 @@ JWT_SECRET=your-jwt-secret
 
 The docker-compose.yml will automatically load the .env file.
 
-## 5. Deployment Process
+## 6. Deployment Process
 
 ### Automatic Deployment (CI/CD)
 
@@ -135,7 +163,7 @@ cd /home/ubuntu/csediualumni-services
 ./scripts/deploy.sh
 ```
 
-## 6. Monitoring & Management
+## 7. Monitoring & Management
 
 ### View Logs:
 
@@ -169,9 +197,32 @@ docker-compose down
 docker-compose up -d
 ```
 
-## 7. SSL/HTTPS Setup (Production)
+## 8. SSL/HTTPS Setup for api.csediualumni.com
 
-### Using Nginx Reverse Proxy with Let's Encrypt:
+### Quick Setup (Recommended):
+
+1. **Run the automated Nginx setup script:**
+
+   ```bash
+   cd /home/ubuntu/csediualumni-services
+   ./scripts/setup-nginx.sh
+   ```
+
+2. **Obtain SSL Certificate:**
+
+   ```bash
+   sudo certbot --nginx -d api.csediualumni.com --non-interactive --agree-tos --email your-email@example.com
+   ```
+
+3. **Update to full SSL config:**
+
+   ```bash
+   sudo rm -f /etc/nginx/sites-enabled/api.csediualumni.com
+   sudo ln -sf /etc/nginx/sites-available/api.csediualumni.com /etc/nginx/sites-enabled/api.csediualumni.com
+   sudo nginx -t && sudo systemctl reload nginx
+   ```
+
+### Manual Setup:
 
 1. **Install Nginx:**
 
@@ -182,7 +233,7 @@ docker-compose up -d
 2. **Configure Nginx:**
 
    ```bash
-   sudo nano /etc/nginx/sites-available/csediualumni
+   sudo nano /etc/nginx/sites-available/api.csediualumni.com
    ```
 
    Add:
@@ -190,7 +241,7 @@ docker-compose up -d
    ```nginx
    server {
        listen 80;
-       server_name your-domain.com;
+       server_name api.csediualumni.com;
 
        location / {
            proxy_pass http://localhost:3000;
@@ -209,17 +260,26 @@ docker-compose up -d
 3. **Enable site:**
 
    ```bash
-   sudo ln -s /etc/nginx/sites-available/csediualumni /etc/nginx/sites-enabled/
+   sudo ln -s /etc/nginx/sites-available/api.csediualumni.com /etc/nginx/sites-enabled/
    sudo nginx -t
    sudo systemctl restart nginx
    ```
 
 4. **Get SSL Certificate:**
    ```bash
-   sudo certbot --nginx -d your-domain.com
+   sudo certbot --nginx -d api.csediualumni.com
    ```
 
-## 8. Troubleshooting
+### SSL Auto-Renewal:
+
+Certbot automatically sets up SSL certificate renewal. Verify with:
+
+```bash
+sudo systemctl status certbot.timer
+sudo certbot renew --dry-run
+```
+
+## 9. Troubleshooting
 
 ### Container won't start:
 
@@ -244,11 +304,21 @@ docker system prune -a
 
 ### Application not accessible:
 
-- Check security group allows port 3000
+- Check security group allows ports 80, 443, and 3000
+- Verify DNS is resolving: `dig api.csediualumni.com`
+- Check Nginx status: `sudo systemctl status nginx`
+- View Nginx logs: `sudo tail -f /var/log/nginx/error.log`
 - Verify container is running: `docker-compose ps`
-- Check logs: `docker-compose logs`
+- Check application logs: `docker-compose logs`
 
-## 9. Cost Optimization
+### SSL Certificate Issues:
+
+- Ensure DNS is properly configured and propagated
+- Check Certbot logs: `sudo journalctl -u certbot`
+- Verify Nginx configuration: `sudo nginx -t`
+- Manual renewal test: `sudo certbot renew --dry-run`
+
+## 10. Cost Optimization
 
 - Use **t2.micro** for development (free tier eligible)
 - Use **Elastic IP** to avoid IP changes
@@ -256,7 +326,7 @@ docker system prune -a
 - Consider **Auto Scaling** for production
 - Use **Application Load Balancer** for multiple instances
 
-## 10. Backup & Recovery
+## 11. Backup & Recovery
 
 ### Database Backup:
 
