@@ -25,16 +25,16 @@
 
 ### 3. Nginx & SSL Setup
 
-- [ ] Run `./scripts/setup-nginx.sh`
-- [ ] Obtain SSL certificate with Certbot
-- [ ] Verify HTTPS is working: `https://api.csediualumni.com`
-- [ ] Check SSL auto-renewal: `sudo systemctl status certbot.timer`
+- [x] Run `./scripts/setup-nginx.sh`
+- [x] Obtain SSL certificate with Certbot
+- [x] Verify HTTPS is working: `https://api.csediualumni.com`
+- [x] Check SSL auto-renewal: `sudo systemctl status certbot.timer`
 
 ### 4. GitHub Configuration
 
-- [ ] Add GitHub secrets (EC2_HOST, SSH keys, Docker credentials)
-- [ ] Test CI/CD pipeline with a push to main
-- [ ] Verify deployment in GitHub Actions
+- [x] Add GitHub secrets (EC2_HOST, SSH keys, Docker credentials)
+- [x] Test CI/CD pipeline with a push to main
+- [x] Verify deployment in GitHub Actions
 
 ---
 
