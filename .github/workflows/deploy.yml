@@ -103,8 +103,12 @@ jobs:
             # Stop and remove old container
             docker-compose down
 
-            # Start new container
-            docker-compose up -d
+            # Remove old containers and volumes
+            docker-compose rm -f
+
+            # Start new container (recreate and pull latest image)
+            docker-compose pull
+            docker-compose up -d --force-recreate --no-build
 
             # Clean up old images
             docker image prune -af

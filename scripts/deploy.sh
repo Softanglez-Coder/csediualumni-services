@@ -31,12 +31,17 @@ docker-compose down
 
 # Remove old containers and images
 echo "Cleaning up old containers and images..."
+docker-compose rm -f
 docker container prune -f
 docker image prune -f
 
+# Pull latest images
+echo "Pulling latest Docker images..."
+docker-compose pull
+
 # Start new containers
 echo "Starting new containers..."
-docker-compose up -d
+docker-compose up -d --force-recreate --no-build
 
 # Wait for containers to start
 echo "Waiting for application to start..."

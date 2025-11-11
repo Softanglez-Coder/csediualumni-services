@@ -3,6 +3,7 @@ version: '3.8'
 services:
   app:
     image: ${DOCKER_USERNAME:-your-dockerhub-username}/csediualumni-services:latest
+    pull_policy: always
     build:
       context: .
       dockerfile: Dockerfile
