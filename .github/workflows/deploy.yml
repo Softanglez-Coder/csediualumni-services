@@ -100,6 +100,9 @@ jobs:
             # Pull latest Docker image
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ env.APP_NAME }}:latest
 
+            # Export Docker username for docker-compose
+            export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+
             # Stop and remove old container
             docker-compose down
 
