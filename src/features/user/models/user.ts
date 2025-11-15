@@ -10,4 +10,8 @@ export class User {
   batch?: string; // D-42: Shift-BatchNumber
   photo?: string;
   membershipId?: string; // 25D42001: YearOfJoining + Shift + Batch + Sequence_Number_3Digits
+
+  // hash is excluded for security reasons
+  // but can be included when necessary
+  hash?: string;
 }

@@ -6,30 +6,137 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { CreateUser, Role, UpdateUser, User } from '../models';
+import { UserRepository } from '../repositories';
+import { UserEntity } from '../schemas';
+import { toUser } from '../utils';
 
 @Injectable()
 export class UserService {
-  async create(user: CreateUser): Promise<User> {}
+  constructor(private readonly userRepository: UserRepository) {}
 
-  async findById(id: string): Promise<User | null> {}
+  async create(user: CreateUser, hash: string): Promise<User> {
+    if (!user || !hash) {
+      throw new BadRequestException('Invalid user data or password hash');
+    }
 
-  async findByEmail(email: string): Promise<User | null> {}
+    const exists = await this.userRepository.findByEmail(user.email);
+    if (exists) {
+      throw new ConflictException(
+        `User already exists with email: ${user.email}`,
+      );
+    }
 
-  async findByMembershipId(membershipId: string): Promise<User | null> {}
+    const entity: UserEntity = {
+      email: user.email,
+      hash: hash,
+      role: Role.GUEST,
+      blocked: false,
+      name: user.email.split('@')[0],
+    };
 
-  async findByBatch(batch: string): Promise<User[]> {}
+    const createdUser = await this.userRepository.create(entity);
 
-  async update(id: string, updates: Partial<UpdateUser>): Promise<User> {}
+    if (!createdUser) {
+      throw new UnprocessableEntityException('Failed to create user');
+    }
 
-  async updatePassword(id: string, newPassword: string): Promise<void> {}
+    const newUser: User = toUser(createdUser);
+    return newUser;
+  }
 
-  async updateRole(id: string, newRole: Role): Promise<User> {}
+  async findById(id: string): Promise<User | null> {
+    const userDocument = await this.userRepository.findById(id);
+    if (!userDocument) {
+      return null;
+    }
 
-  async updatePhoto(id: string, photo: File): Promise<User> {}
+    const user: User = toUser(userDocument);
+    return user;
+  }
 
-  async block(id: string): Promise<void> {}
+  async findByEmail(email: string): Promise<User | null> {
+    const userDocument = await this.userRepository.findByEmail(email);
+    if (!userDocument) {
+      return null;
+    }
 
-  async unblock(id: string): Promise<void> {}
+    const user: User = toUser(userDocument);
+    return user;
+  }
+
+  async findByMembershipId(membershipId: string): Promise<User | null> {
+    const userDocument =
+      await this.userRepository.findByMembershipId(membershipId);
+    if (!userDocument) {
+      return null;
+    }
+    const user: User = toUser(userDocument);
+    return user;
+  }
+
+  async findByBatch(batch: string): Promise<User[]> {
+    const userDocuments = await this.userRepository.findByBatch(batch);
+    const users: User[] = userDocuments.map((doc) => toUser(doc));
+    return users;
+  }
+
+  async update(id: string, updates: Partial<UpdateUser>): Promise<User> {
+    const updatedDocument = await this.userRepository.update(id, updates);
+    if (!updatedDocument) {
+      throw new NotFoundException(`User not found with id: ${id}`);
+    }
+    const updatedUser: User = toUser(updatedDocument);
+    return updatedUser;
+  }
+
+  async updatePassword(id: string, hash: string): Promise<void> {
+    const updatedDocument = await this.userRepository.updateHash(id, hash);
+    if (!updatedDocument) {
+      throw new NotFoundException(`User not found with id: ${id}`);
+    }
+
+    return;
+  }
+
+  async updateRole(id: string, newRole: Role): Promise<User> {
+    const updatedDocument = await this.userRepository.updateRole(id, newRole);
+    if (!updatedDocument) {
+      throw new NotFoundException(`User not found with id: ${id}`);
+    }
+
+    const updatedUser: User = toUser(updatedDocument);
+    return updatedUser;
+  }
+
+  async updatePhoto(id: string, photo: File): Promise<User> {
+    // TODO: handle file upload to storage service and get the URL or path
+    const url = `path/to/uploaded/${photo.name}`;
+    const updatedDocument = await this.userRepository.updatePhoto(id, url);
+    if (!updatedDocument) {
+      throw new NotFoundException(`User not found with id: ${id}`);
+    }
+
+    const updatedUser: User = toUser(updatedDocument);
+    return updatedUser;
+  }
+
+  async block(id: string): Promise<void> {
+    const updatedDocument = await this.userRepository.block(id);
+    if (!updatedDocument) {
+      throw new NotFoundException(`User not found with id: ${id}`);
+    }
+
+    return;
+  }
+
+  async unblock(id: string): Promise<void> {
+    const updatedDocument = await this.userRepository.unblock(id);
+    if (!updatedDocument) {
+      throw new NotFoundException(`User not found with id: ${id}`);
+    }
+
+    return;
+  }
 
   async assignMembershipId(id: string): Promise<User> {
     const currentYear = new Date().getFullYear().toString().slice(-2);
@@ -71,7 +178,7 @@ export class UserService {
     const membershipId = `${currentYear}${shift}${batchNumber}${sequenceNumber}`;
 
     // ie. 25D42001: YearOfJoining + Shift + Batch + Sequence_Number_3Digits
-    const patternMatched = /^[0-9]{2}[DE][0-9]{2}[0-9]{3}$/.test(membershipId);
+    const patternMatched = /^[0-9]{2}[DE][0-9]{4}[0-9]{3}$/.test(membershipId);
     if (!patternMatched) {
       throw new UnprocessableEntityException(
         `Generated membership ID ${membershipId} does not match the required pattern for user id: ${id}.`,
