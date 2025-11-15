@@ -17,6 +17,18 @@ RESTful API backend for CSE DIU Alumni platform built with NestJS.
 ## ✨ Features
 
 - 🏗️ Built with NestJS framework
+- 🔐 **User Authentication & Registration**
+  - Email/Password registration with email verification
+  - Google OAuth 2.0 integration
+  - JWT-based authentication
+  - Secure password hashing with bcrypt
+- 🗄️ **MongoDB Database Integration**
+  - User management with Mongoose
+  - Indexed schemas for performance
+- 📧 **Email Service**
+  - Email verification system
+  - Welcome emails
+  - SMTP support (Gmail, SendGrid, AWS SES)
 - 🐳 Fully containerized with Docker
 - 🔄 CI/CD pipeline with GitHub Actions
 - 🔒 SSL/HTTPS enabled with Let's Encrypt
@@ -27,6 +39,9 @@ RESTful API backend for CSE DIU Alumni platform built with NestJS.
 ## 🛠️ Tech Stack
 
 - **Framework:** [NestJS](https://nestjs.com/)
+- **Database:** [MongoDB](https://www.mongodb.com/) with Mongoose
+- **Authentication:** JWT, Passport.js, bcrypt
+- **Email:** Nodemailer with SMTP
 - **Runtime:** Node.js 20
 - **Containerization:** Docker & Docker Compose
 - **CI/CD:** GitHub Actions
@@ -35,6 +50,13 @@ RESTful API backend for CSE DIU Alumni platform built with NestJS.
 - **SSL:** Let's Encrypt (Certbot)
 
 ## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 20+
+- MongoDB (local or [MongoDB Atlas](https://www.mongodb.com/cloud/atlas))
+- Gmail account with App Password (for email verification)
+- Google Cloud Console account (for OAuth)
 
 ### Local Development
 
@@ -45,11 +67,30 @@ npm install
 # Copy environment variables
 cp .env.example .env
 
+# Configure .env file with your settings
+# See SETUP_GUIDE.md for detailed instructions
+
 # Run in development mode
 npm run start:dev
 
 # API will be available at http://localhost:3000
 ```
+
+### Quick Test
+
+```bash
+# Test registration endpoint
+curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "test@example.com",
+    "password": "TestPassword123",
+    "firstName": "Test",
+    "lastName": "User"
+  }'
+```
+
+For complete setup instructions, see [SETUP_GUIDE.md](./SETUP_GUIDE.md)
 
 ### Using Docker
 
@@ -102,6 +143,9 @@ For detailed instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 ## 📚 Documentation
 
+- 📖 [AUTHENTICATION.md](./AUTHENTICATION.md) - Authentication API reference
+- 🔧 [SETUP_GUIDE.md](./SETUP_GUIDE.md) - Complete setup guide
+- 📋 [IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md) - Implementation overview
 - 📖 [DEPLOYMENT.md](./DEPLOYMENT.md) - Complete deployment guide
 - 🔧 [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) - Common commands
 - 🐳 [Dockerfile](./Dockerfile) - Docker configuration
