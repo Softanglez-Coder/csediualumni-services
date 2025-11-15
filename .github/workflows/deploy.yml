@@ -87,6 +87,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: ${{ secrets.EC2_SSH_PORT || 22 }}
+          envs: NODE_ENV,PORT,FRONTEND_URL,MONGODB_URI,JWT_SECRET,JWT_EXPIRATION,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,GOOGLE_CALLBACK_URL,SMTP_HOST,SMTP_PORT,SMTP_SECURE,SMTP_USER,SMTP_PASSWORD,MAIL_FROM,DOCKER_USERNAME
           script: |
             # Navigate to application directory
             cd /home/${{ secrets.EC2_USERNAME }}/${{ env.APP_NAME }} || exit 1
@@ -94,14 +95,33 @@ jobs:
             # Pull latest changes
             git pull origin main
 
+            # Update environment variables
+            export NODE_ENV="${{ secrets.NODE_ENV || 'production' }}"
+            export PORT="${{ secrets.PORT || '3000' }}"
+            export FRONTEND_URL="${{ secrets.FRONTEND_URL }}"
+            export MONGODB_URI="${{ secrets.MONGODB_URI }}"
+            export JWT_SECRET="${{ secrets.JWT_SECRET }}"
+            export JWT_EXPIRATION="${{ secrets.JWT_EXPIRATION || '7d' }}"
+            export GOOGLE_CLIENT_ID="${{ secrets.GOOGLE_CLIENT_ID }}"
+            export GOOGLE_CLIENT_SECRET="${{ secrets.GOOGLE_CLIENT_SECRET }}"
+            export GOOGLE_CALLBACK_URL="${{ secrets.GOOGLE_CALLBACK_URL }}"
+            export SMTP_HOST="${{ secrets.SMTP_HOST }}"
+            export SMTP_PORT="${{ secrets.SMTP_PORT || '587' }}"
+            export SMTP_SECURE="${{ secrets.SMTP_SECURE || 'false' }}"
+            export SMTP_USER="${{ secrets.SMTP_USER }}"
+            export SMTP_PASSWORD="${{ secrets.SMTP_PASSWORD }}"
+            export MAIL_FROM="${{ secrets.MAIL_FROM }}"
+            export DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
+            
+            # Run environment update script
+            chmod +x ./scripts/update-env.sh
+            ./scripts/update-env.sh
+
             # Login to Docker Hub
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
             # Pull latest Docker image
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ env.APP_NAME }}:latest
-
-            # Export Docker username for docker-compose
-            export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
 
             # Stop and remove old container
             docker-compose down
