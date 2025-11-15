@@ -31,6 +31,7 @@ export class UserService {
       hash: hash,
       role: Role.GUEST,
       blocked: false,
+      emailVerified: false,
       name: user.email.split('@')[0],
     };
 
@@ -136,6 +137,35 @@ export class UserService {
     }
 
     return;
+  }
+
+  async findByEmailVerificationToken(token: string): Promise<User | null> {
+    const userDocument =
+      await this.userRepository.findByEmailVerificationToken(token);
+    if (!userDocument) {
+      return null;
+    }
+    const user: User = toUser(userDocument);
+    return user;
+  }
+
+  async findByPasswordResetToken(token: string): Promise<User | null> {
+    const userDocument =
+      await this.userRepository.findByPasswordResetToken(token);
+    if (!userDocument) {
+      return null;
+    }
+    const user: User = toUser(userDocument);
+    return user;
+  }
+
+  async verifyEmail(id: string): Promise<User> {
+    const userDocument = await this.userRepository.verifyEmail(id);
+    if (!userDocument) {
+      throw new NotFoundException(`User not found with id: ${id}`);
+    }
+    const user: User = toUser(userDocument);
+    return user;
   }
 
   async assignMembershipId(id: string): Promise<User> {

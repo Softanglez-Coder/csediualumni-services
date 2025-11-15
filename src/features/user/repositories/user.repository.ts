@@ -60,4 +60,36 @@ export class UserRepository {
       .findByIdAndUpdate(id, { blocked: false }, { new: true })
       .exec();
   }
+
+  async findByEmailVerificationToken(token: string) {
+    return this.userModel
+      .findOne({
+        emailVerificationToken: token,
+        emailVerificationExpires: { $gt: new Date() },
+      })
+      .exec();
+  }
+
+  async findByPasswordResetToken(token: string) {
+    return this.userModel
+      .findOne({
+        passwordResetToken: token,
+        passwordResetExpires: { $gt: new Date() },
+      })
+      .exec();
+  }
+
+  async verifyEmail(id: string) {
+    return this.userModel
+      .findByIdAndUpdate(
+        id,
+        {
+          emailVerified: true,
+          emailVerificationToken: null,
+          emailVerificationExpires: null,
+        },
+        { new: true },
+      )
+      .exec();
+  }
 }

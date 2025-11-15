@@ -25,10 +25,10 @@ export class UserEntity {
   role: Role;
 
   @Prop({
-    required: true,
+    required: false,
     type: String,
   })
-  hash: string;
+  hash?: string;
 
   @Prop({
     required: true,
@@ -36,6 +36,38 @@ export class UserEntity {
     type: Boolean,
   })
   blocked: boolean;
+
+  @Prop({
+    required: true,
+    default: false,
+    type: Boolean,
+  })
+  emailVerified: boolean;
+
+  @Prop({
+    type: String,
+  })
+  emailVerificationToken?: string;
+
+  @Prop({
+    type: Date,
+  })
+  emailVerificationExpires?: Date;
+
+  @Prop({
+    type: String,
+  })
+  passwordResetToken?: string;
+
+  @Prop({
+    type: Date,
+  })
+  passwordResetExpires?: Date;
+
+  @Prop({
+    type: String,
+  })
+  googleId?: string;
 
   @Prop({
     maxLength: 100,
