@@ -5,20 +5,23 @@ import {
   UseGuards,
   Request,
   Get,
-  Query,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   RegisterDto,
-  LoginDto,
   VerifyEmailDto,
   ResendVerificationDto,
 } from './dto/auth.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { ConfigService } from '@nestjs/config';
+import { UserDocument } from '../users/schemas/user.schema';
+
+interface RequestWithUser extends Request {
+  user: UserDocument;
+}
 
 @Controller('api/auth')
 export class AuthController {
@@ -35,7 +38,8 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(@Request() req: any) {
+  login(@Request() req: RequestWithUser) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return this.authService.login(req.user);
   }
 
@@ -51,16 +55,17 @@ export class AuthController {
 
   @Get('google')
   @UseGuards(GoogleAuthGuard)
-  async googleAuth() {
+  googleAuth() {
     // Guard redirects to Google
   }
 
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
-  async googleAuthCallback(@Request() req: any) {
-    const result = await this.authService.googleLogin(req);
+  async googleAuthCallback(@Request() req: RequestWithUser) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await this.authService.googleLogin(req as any);
     const frontendUrl = this.configService.get<string>('frontend.url');
-    
+
     // Redirect to frontend with token
     return `
       <html>

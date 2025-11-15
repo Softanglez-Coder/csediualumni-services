@@ -20,7 +20,9 @@ import { GoogleStrategy } from './strategies/google.strategy';
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('jwt.secret') || 'default-secret',
         signOptions: {
-          expiresIn: (configService.get<string>('jwt.expiresIn') || '7d') as any,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+          expiresIn: (configService.get<string>('jwt.expiresIn') ||
+            '7d') as any,
         },
       }),
       inject: [ConfigService],

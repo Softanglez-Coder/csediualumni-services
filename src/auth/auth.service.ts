@@ -6,7 +6,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { MailService } from '../mail/mail.service';
-import { RegisterDto, LoginDto } from './dto/auth.dto';
+import { RegisterDto } from './dto/auth.dto';
 import { UserDocument } from '../users/schemas/user.schema';
 
 @Injectable()
@@ -35,7 +35,8 @@ export class AuthService {
     }
 
     return {
-      message: 'Registration successful. Please check your email to verify your account.',
+      message:
+        'Registration successful. Please check your email to verify your account.',
       user: {
         id: user._id,
         email: user.email,
@@ -79,7 +80,7 @@ export class AuthService {
     return user;
   }
 
-  async login(user: UserDocument) {
+  login(user: UserDocument) {
     const payload = {
       email: user.email,
       sub: user._id,
@@ -140,16 +141,23 @@ export class AuthService {
     };
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async googleLogin(req: any) {
     if (!req.user) {
       throw new UnauthorizedException('No user from Google');
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
     const user = await this.usersService.createOrUpdateGoogleUser(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       req.user.googleId,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       req.user.email,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       req.user.firstName,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       req.user.lastName,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       req.user.profilePicture,
     );
 

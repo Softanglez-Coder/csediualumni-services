@@ -7,6 +7,7 @@ import { MailService } from './mail.service';
   imports: [
     MailerModule.forRootAsync({
       imports: [ConfigModule],
+      // eslint-disable-next-line @typescript-eslint/require-await
       useFactory: async (configService: ConfigService) => ({
         transport: {
           host: configService.get('mail.host'),

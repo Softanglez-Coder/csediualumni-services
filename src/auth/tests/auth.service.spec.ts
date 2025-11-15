@@ -3,10 +3,7 @@ import { AuthService } from '../auth.service';
 import { UsersService } from '../../users/users.service';
 import { MailService } from '../../mail/mail.service';
 import { JwtService } from '@nestjs/jwt';
-import {
-  UnauthorizedException,
-  BadRequestException,
-} from '@nestjs/common';
+import { UnauthorizedException, BadRequestException } from '@nestjs/common';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -160,10 +157,7 @@ describe('AuthService', () => {
       mockUsersService.findByEmail.mockResolvedValue(mockUser);
       mockUsersService.validatePassword.mockResolvedValue(true);
 
-      const result = await service.validateUser(
-        'test@example.com',
-        'password',
-      );
+      const result = await service.validateUser('test@example.com', 'password');
 
       expect(result).toEqual(mockUser);
     });
