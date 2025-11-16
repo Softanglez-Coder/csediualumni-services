@@ -39,7 +39,6 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   login(@Request() req: RequestWithUser) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return this.authService.login(req.user);
   }
 
@@ -62,7 +61,6 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
   async googleAuthCallback(@Request() req: RequestWithUser) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = await this.authService.googleLogin(req as any);
     const frontendUrl = this.configService.get<string>('frontend.url');
 

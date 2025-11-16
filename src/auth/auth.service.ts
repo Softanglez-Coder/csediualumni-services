@@ -141,13 +141,11 @@ export class AuthService {
     };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async googleLogin(req: any) {
     if (!req.user) {
       throw new UnauthorizedException('No user from Google');
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
     const user = await this.usersService.createOrUpdateGoogleUser(
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       req.user.googleId,
