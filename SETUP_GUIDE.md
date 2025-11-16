@@ -19,7 +19,6 @@ This guide explains how to set up and configure the authentication system for th
 - MongoDB (local or cloud instance)
 - Gmail account (for SMTP) or other email service
 - Google Cloud Console account (for OAuth)
-- AWS EC2 instance (for production)
 
 ## Local Development Setup
 
@@ -131,14 +130,6 @@ SMTP_USER=apikey
 SMTP_PASSWORD=your-sendgrid-api-key
 ```
 
-#### AWS SES
-```bash
-SMTP_HOST=email-smtp.us-east-1.amazonaws.com
-SMTP_PORT=587
-SMTP_USER=your-ses-smtp-username
-SMTP_PASSWORD=your-ses-smtp-password
-```
-
 ## Google OAuth Setup
 
 1. **Go to Google Cloud Console:**
@@ -162,7 +153,7 @@ SMTP_PASSWORD=your-ses-smtp-password
 
 5. **Add Authorized Redirect URIs:**
    - For development: `http://localhost:3000/api/auth/google/callback`
-   - For production: `https://api.csediualumni.com/api/auth/google/callback`
+   - For production: Update with your production domain callback URL
 
 6. **Copy Credentials:**
    - Copy the Client ID and Client Secret
@@ -176,33 +167,23 @@ SMTP_PASSWORD=your-ses-smtp-password
 
 ## Production Deployment
 
-### EC2 Environment Setup
+### Environment Setup
 
-1. **SSH into EC2:**
-   ```bash
-   ssh -i your-key.pem ubuntu@your-ec2-ip
-   ```
-
-2. **Navigate to Application Directory:**
-   ```bash
-   cd /home/ubuntu/csediualumni-services
-   ```
-
-3. **Create .env File:**
+1. **Create .env File:**
    ```bash
    nano .env
    ```
    
    Add production values (see .env.example)
 
-4. **Update Production URLs:**
+2. **Update Production URLs:**
    ```bash
-   FRONTEND_URL=https://csediualumni.com
-   GOOGLE_CALLBACK_URL=https://api.csediualumni.com/api/auth/google/callback
+   FRONTEND_URL=https://your-frontend-domain.com
+   GOOGLE_CALLBACK_URL=https://your-api-domain.com/api/auth/google/callback
    MONGODB_URI=mongodb+srv://... (use MongoDB Atlas)
    ```
 
-5. **Set Secure JWT Secret:**
+3. **Set Secure JWT Secret:**
    ```bash
    # Generate a secure random secret
    JWT_SECRET=$(openssl rand -base64 64 | tr -d '\n')
@@ -219,7 +200,7 @@ docker-compose up -d
 
 ## GitHub Secrets Configuration
 
-Configure these secrets in your GitHub repository for automated deployment:
+Configure these secrets in your GitHub repository for automated builds:
 
 1. **Go to Repository Settings:**
    - Navigate to Settings → Secrets and variables → Actions
@@ -227,20 +208,14 @@ Configure these secrets in your GitHub repository for automated deployment:
 
 2. **Add Required Secrets:**
 
-   **AWS/EC2 Secrets:**
-   - `EC2_HOST`: Your EC2 instance public IP or domain
-   - `EC2_USERNAME`: SSH username (usually `ubuntu`)
-   - `EC2_SSH_KEY`: Private SSH key for EC2 access
-   - `EC2_SSH_PORT`: SSH port (default: 22)
-
    **Docker Secrets:**
    - `DOCKER_USERNAME`: Docker Hub username
    - `DOCKER_PASSWORD`: Docker Hub password or access token
 
-   **Application Secrets:**
+   **Application Secrets (for reference):**
    - `NODE_ENV`: `production`
    - `PORT`: `3000`
-   - `FRONTEND_URL`: `https://csediualumni.com`
+   - `FRONTEND_URL`: Your frontend domain
    
    **MongoDB:**
    - `MONGODB_URI`: MongoDB connection string
@@ -252,7 +227,7 @@ Configure these secrets in your GitHub repository for automated deployment:
    **Google OAuth:**
    - `GOOGLE_CLIENT_ID`: From Google Cloud Console
    - `GOOGLE_CLIENT_SECRET`: From Google Cloud Console
-   - `GOOGLE_CALLBACK_URL`: `https://api.csediualumni.com/api/auth/google/callback`
+   - `GOOGLE_CALLBACK_URL`: Your production callback URL
 
    **Email/SMTP:**
    - `SMTP_HOST`: `smtp.gmail.com` or your provider
@@ -260,13 +235,15 @@ Configure these secrets in your GitHub repository for automated deployment:
    - `SMTP_SECURE`: `false`
    - `SMTP_USER`: Your email address
    - `SMTP_PASSWORD`: App password or SMTP password
-   - `MAIL_FROM`: `CSE DIU Alumni <noreply@csediualumni.com>`
+   - `MAIL_FROM`: Your from address
 
-3. **Deploy:**
-   Once secrets are configured, push to main branch to trigger deployment:
+3. **Build and Deploy:**
+   Once secrets are configured, push to main branch to trigger build:
    ```bash
    git push origin main
    ```
+   
+   The Docker image will be built and pushed to Docker Hub, ready for deployment to your hosting platform.
 
 ## Testing the Setup
 
@@ -385,5 +362,4 @@ After successful setup:
 ## Support
 
 - **Documentation:** [AUTHENTICATION.md](./AUTHENTICATION.md)
-- **Deployment Guide:** [DEPLOYMENT.md](./DEPLOYMENT.md)
 - **Issues:** [GitHub Issues](https://github.com/Softanglez-Coder/csediualumni-services/issues)

@@ -36,9 +36,6 @@ docker-compose restart        # Restart
 ## Deployment Commands
 
 ```bash
-# First time EC2 setup
-./scripts/ec2-setup.sh
-
 # Manual deployment
 ./scripts/deploy.sh
 
@@ -48,43 +45,17 @@ docker-compose restart        # Restart
 
 ## GitHub Actions Workflow
 
-**Automatic deployment on push to main:**
+**Automatic build and test on push to main:**
 
 - ✅ Runs tests
 - 🏗️ Builds Docker image
 - 📦 Pushes to Docker Hub
-- 🚀 Deploys to EC2
-- ✓ Verifies deployment
 
 ## Required GitHub Secrets
 
 ```
-EC2_HOST              # EC2 public IP
-EC2_USERNAME          # ubuntu
-EC2_SSH_KEY          # Private key content
 DOCKER_USERNAME      # Docker Hub username
 DOCKER_PASSWORD      # Docker Hub token
-```
-
-## EC2 Instance Commands
-
-```bash
-# SSH into EC2
-ssh -i your-key.pem ubuntu@your-ec2-ip
-
-# Navigate to app
-cd /home/ubuntu/csediualumni-services
-
-# View logs
-docker-compose logs -f
-
-# Restart app
-docker-compose restart
-
-# Update and redeploy
-git pull origin main
-docker-compose down
-docker-compose up -d
 ```
 
 ## Troubleshooting
@@ -120,8 +91,6 @@ docker stats
 ## URLs
 
 - **Local Development:** http://localhost:3000
-- **Production API:** https://api.csediualumni.com
-- **EC2 Direct Access:** http://your-ec2-ip:3000
 
 ## Environment Variables
 
@@ -134,6 +103,5 @@ nano .env
 
 ## Documentation
 
-- 📖 [DEPLOYMENT.md](./DEPLOYMENT.md) - Full deployment guide
 - 🐳 [Dockerfile](./Dockerfile) - Docker configuration
 - 🚀 [.github/workflows/deploy.yml](.github/workflows/deploy.yml) - CI/CD pipeline

@@ -2,16 +2,13 @@
 
 ## Changes Not Reflecting After Deployment
 
-If your code changes aren't reflecting on the live server after pushing and running the pipeline, follow these steps:
+If your code changes aren't reflecting after pushing and running the pipeline, follow these steps:
 
-### Quick Fix (SSH into EC2 and Run Manually)
+### Quick Fix (Manual Deployment)
 
 ```bash
-# SSH into your EC2 instance
-ssh -i your-key.pem ubuntu@your-ec2-ip
-
 # Navigate to the app directory
-cd /home/ubuntu/csediualumni-services
+cd /home/your-user/csediualumni-services
 
 # Stop all containers
 docker-compose down
@@ -34,7 +31,7 @@ docker-compose logs --tail=50
 
 ### Verify the Changes
 
-1. **Check Docker Image on EC2:**
+1. **Check Docker Image:**
 
    ```bash
    # List images with creation dates
@@ -53,19 +50,15 @@ docker-compose logs --tail=50
 3. **Test the Endpoint Directly:**
 
    ```bash
-   # Test locally on EC2
+   # Test locally
    curl http://localhost:3000
-
-   # Test through nginx
-   curl http://api.csediualumni.com
-   curl https://api.csediualumni.com
    ```
 
 4. **Check from Your Browser:**
    - Open developer tools (F12)
    - Go to Network tab
    - Check "Disable cache"
-   - Visit https://api.csediualumni.com
+   - Visit your application URL
    - Or use Ctrl+Shift+R (Cmd+Shift+R on Mac) for hard refresh
 
 ### Common Issues and Solutions
@@ -95,19 +88,18 @@ docker-compose logs --tail=50
 
 - Hard refresh: Ctrl+Shift+R (Windows/Linux) or Cmd+Shift+R (Mac)
 - Or open in incognito/private mode
-- nginx already has `proxy_cache_bypass` configured
 
 ### Check Pipeline Status
 
 1. Go to your GitHub repository
 2. Click on "Actions" tab
 3. Find the latest workflow run
-4. Make sure all jobs (test, build, deploy) completed successfully
-5. Check the "Deploy to EC2" step logs for any errors
+4. Make sure all jobs (test, build) completed successfully
+5. Check the build step logs for any errors
 
 ### Manual Verification Steps
 
-After deployment, run these commands on your EC2:
+After deployment, run these commands:
 
 ```bash
 # Check Docker Hub for latest image timestamp
@@ -157,17 +149,11 @@ Check these:
 2. **Check GitHub Actions workflow:**
    - Make sure the build job succeeded
    - Make sure the image was pushed to Docker Hub
-   - Make sure the deploy job succeeded
 
-3. **Check EC2 instance:**
+3. **Check your server:**
    - Make sure you have enough disk space: `df -h`
    - Make sure Docker is running: `docker ps`
    - Check system logs: `journalctl -u docker`
-
-4. **Check nginx:**
-   - Make sure nginx is running: `sudo systemctl status nginx`
-   - Check nginx logs: `sudo tail -f /var/log/nginx/api.csediualumni.com.error.log`
-   - Reload nginx config: `sudo nginx -t && sudo systemctl reload nginx`
 
 ### Contact Points
 
@@ -175,6 +161,5 @@ If issues persist, provide these details:
 
 - GitHub Actions workflow run URL
 - Docker image creation timestamp from Docker Hub
-- EC2 container logs (`docker-compose logs`)
-- Response from `curl http://localhost:3000` on EC2
-- Response from `curl https://api.csediualumni.com` from external
+- Container logs (`docker-compose logs`)
+- Response from `curl http://localhost:3000` locally
