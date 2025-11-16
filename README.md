@@ -28,13 +28,10 @@ RESTful API backend for CSE DIU Alumni platform built with NestJS.
 - 📧 **Email Service**
   - Email verification system
   - Welcome emails
-  - SMTP support (Gmail, SendGrid, AWS SES)
+  - SMTP support (Gmail, SendGrid, etc.)
 - 🐳 Fully containerized with Docker
 - 🔄 CI/CD pipeline with GitHub Actions
-- 🔒 SSL/HTTPS enabled with Let's Encrypt
 - 📊 Health monitoring and logging
-- 🚀 Auto-deployment to AWS EC2
-- 🌐 Custom domain: **api.csediualumni.com**
 
 ## 🛠️ Tech Stack
 
@@ -43,11 +40,9 @@ RESTful API backend for CSE DIU Alumni platform built with NestJS.
 - **Authentication:** JWT, Passport.js, bcrypt
 - **Email:** Nodemailer with SMTP
 - **Runtime:** Node.js 20
-- **Containerization:** Docker & Docker Compose
+- **Containerization:** Docker
+- **Hosting:** [Railway](https://railway.app/)
 - **CI/CD:** GitHub Actions
-- **Hosting:** AWS EC2 (Ubuntu 22.04)
-- **Reverse Proxy:** Nginx
-- **SSL:** Let's Encrypt (Certbot)
 
 ## 🚀 Quick Start
 
@@ -117,36 +112,62 @@ npm run format         # Format code
 
 ## 🌐 Deployment
 
-### Automatic Deployment (CI/CD)
+### Railway Deployment
 
-Push to `main` branch triggers automatic deployment:
+This application is deployed on [Railway](https://railway.app/) at [api.csediualumni.com](https://api.csediualumni.com).
 
-1. ✅ Runs tests and linting
-2. 🏗️ Builds Docker image
-3. 📦 Pushes to Docker Hub
-4. 🚀 Deploys to AWS EC2
-5. ✓ Verifies deployment
+**Automatic Deployment:**
+- Push to `main` branch triggers Railway deployment automatically
+- Railway builds from Dockerfile
+- Environment variables are managed in Railway dashboard
 
-### First-Time Setup
+**First-Time Setup:**
 
-1. **Launch EC2 Instance** (Ubuntu 22.04)
-2. **Configure DNS:** Point `api.csediualumni.com` to EC2 IP
-3. **Run Setup Scripts:**
-   ```bash
-   ./scripts/ec2-setup.sh
-   ./scripts/setup-nginx.sh
+1. **Connect to Railway:**
+   - Go to [Railway](https://railway.app/)
+   - Create new project from GitHub repo
+   - Connect `Softanglez-Coder/csediualumni-services`
+
+2. **Configure Environment Variables:**
+   Add these in Railway dashboard:
    ```
-4. **Configure GitHub Secrets**
-5. **Push to deploy**
+   NODE_ENV=production
+   PORT=3000
+   MONGODB_URI=your-mongodb-uri
+   JWT_SECRET=your-jwt-secret
+   JWT_EXPIRATION=7d
+   GOOGLE_CLIENT_ID=your-google-client-id
+   GOOGLE_CLIENT_SECRET=your-google-client-secret
+   GOOGLE_CALLBACK_URL=https://api.csediualumni.com/api/auth/google/callback
+   SMTP_HOST=smtp.gmail.com
+   SMTP_PORT=587
+   SMTP_SECURE=false
+   SMTP_USER=your-email@gmail.com
+   SMTP_PASSWORD=your-app-password
+   MAIL_FROM=CSE DIU Alumni <noreply@csediualumni.com>
+   FRONTEND_URL=https://csediualumni.com
+   ```
 
-For detailed instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
+3. **Configure Custom Domain:**
+   - In Railway project settings
+   - Add custom domain: `api.csediualumni.com`
+   - Update DNS with provided CNAME
+
+4. **Deploy:**
+   - Push to main branch or click "Deploy" in Railway dashboard
+
+### CI/CD Pipeline
+
+Push to `main` branch triggers:
+1. ✅ Runs tests and linting
+2. ✅ Builds application
+3. 🚀 Railway auto-deploys on success
 
 ## 📚 Documentation
 
 - 📖 [AUTHENTICATION.md](./AUTHENTICATION.md) - Authentication API reference
 - 🔧 [SETUP_GUIDE.md](./SETUP_GUIDE.md) - Complete setup guide
 - 📋 [IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md) - Implementation overview
-- 📖 [DEPLOYMENT.md](./DEPLOYMENT.md) - Complete deployment guide
 - 🔧 [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) - Common commands
 - 🐳 [Dockerfile](./Dockerfile) - Docker configuration
 - ⚙️ [CI/CD Workflow](.github/workflows/deploy.yml) - GitHub Actions
@@ -165,7 +186,6 @@ csediualumni-services/
 ## 🐛 Issues & Support
 
 - Create an issue on [GitHub](https://github.com/Softanglez-Coder/csediualumni-services/issues)
-- Check [DEPLOYMENT.md](./DEPLOYMENT.md) for troubleshooting
 
 ---
 

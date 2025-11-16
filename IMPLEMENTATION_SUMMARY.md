@@ -100,7 +100,7 @@ All endpoints are prefixed with `/api/auth/`:
 
 **SETUP_GUIDE.md:**
 - MongoDB setup (local and Atlas)
-- Email/SMTP configuration (Gmail, SendGrid, AWS SES)
+- Email/SMTP configuration (Gmail, SendGrid, etc.)
 - Google OAuth setup
 - Production deployment guide
 - GitHub Secrets configuration
@@ -126,22 +126,17 @@ All required environment variables are documented in `.env.example`:
 - `SMTP_HOST` - SMTP server (default: smtp.gmail.com)
 - `SMTP_PORT` - SMTP port (default: 587)
 
-### 9. GitHub Actions Integration
+### 9. CI/CD Integration
 
-**Automated Deployment:**
-The `.github/workflows/deploy.yml` workflow now:
+**Automated Testing:**
+The `.github/workflows/deploy.yml` workflow:
 1. Runs tests and linting
-2. Builds Docker image
-3. Pushes to Docker Hub
-4. Updates environment variables on EC2
-5. Deploys to EC2
-6. Verifies deployment
+2. Builds application
 
-**Environment Management:**
-- Script: `scripts/update-env.sh`
-- Automatically creates/updates `.env` file on EC2
-- Validates critical variables are set
-- Backs up existing `.env` before updating
+**Railway Deployment:**
+- Railway automatically deploys on push to main
+- Builds from Dockerfile
+- Environment variables managed in Railway dashboard
 
 ### 10. Testing
 
@@ -207,9 +202,9 @@ The `.github/workflows/deploy.yml` workflow now:
 5. Run `npm install` and `npm run start:dev`
 
 ### For Production:
-1. Configure GitHub Secrets (see SETUP_GUIDE.md)
-2. Push to main branch to trigger deployment
-3. Monitor deployment in GitHub Actions
+1. Configure environment variables in Railway dashboard
+2. Connect GitHub repository to Railway
+3. Push to main branch to trigger deployment
 4. Verify API is working: `curl https://api.csediualumni.com`
 
 ### Optional Enhancements:

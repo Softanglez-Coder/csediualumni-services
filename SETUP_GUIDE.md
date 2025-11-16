@@ -19,7 +19,6 @@ This guide explains how to set up and configure the authentication system for th
 - MongoDB (local or cloud instance)
 - Gmail account (for SMTP) or other email service
 - Google Cloud Console account (for OAuth)
-- AWS EC2 instance (for production)
 
 ## Local Development Setup
 
@@ -131,14 +130,6 @@ SMTP_USER=apikey
 SMTP_PASSWORD=your-sendgrid-api-key
 ```
 
-#### AWS SES
-```bash
-SMTP_HOST=email-smtp.us-east-1.amazonaws.com
-SMTP_PORT=587
-SMTP_USER=your-ses-smtp-username
-SMTP_PASSWORD=your-ses-smtp-password
-```
-
 ## Google OAuth Setup
 
 1. **Go to Google Cloud Console:**
@@ -176,42 +167,41 @@ SMTP_PASSWORD=your-ses-smtp-password
 
 ## Production Deployment
 
-### EC2 Environment Setup
+### Railway Deployment
 
-1. **SSH into EC2:**
+1. **Environment Variables:**
+   Configure these in Railway dashboard:
    ```bash
-   ssh -i your-key.pem ubuntu@your-ec2-ip
-   ```
-
-2. **Navigate to Application Directory:**
-   ```bash
-   cd /home/ubuntu/csediualumni-services
-   ```
-
-3. **Create .env File:**
-   ```bash
-   nano .env
-   ```
-   
-   Add production values (see .env.example)
-
-4. **Update Production URLs:**
-   ```bash
+   NODE_ENV=production
+   PORT=3000
    FRONTEND_URL=https://csediualumni.com
    GOOGLE_CALLBACK_URL=https://api.csediualumni.com/api/auth/google/callback
    MONGODB_URI=mongodb+srv://... (use MongoDB Atlas)
+   JWT_SECRET=$(openssl rand -base64 64 | tr -d '\n')
+   JWT_EXPIRATION=7d
+   SMTP_HOST=smtp.gmail.com
+   SMTP_PORT=587
+   SMTP_SECURE=false
+   SMTP_USER=your-email@gmail.com
+   SMTP_PASSWORD=your-app-password
+   MAIL_FROM=CSE DIU Alumni <noreply@csediualumni.com>
+   GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+   GOOGLE_CLIENT_SECRET=your-client-secret
    ```
 
-5. **Set Secure JWT Secret:**
-   ```bash
-   # Generate a secure random secret
-   JWT_SECRET=$(openssl rand -base64 64 | tr -d '\n')
-   echo "JWT_SECRET=$JWT_SECRET" >> .env
-   ```
+2. **Connect Repository:**
+   - Go to [Railway](https://railway.app/)
+   - Create new project
+   - Connect GitHub repository
+   - Railway will auto-deploy on push to main
+
+3. **Configure Custom Domain:**
+   - In Railway settings, add `api.csediualumni.com`
+   - Update your DNS with provided CNAME
 
 ### Docker Setup
 
-The application uses Docker for deployment. Make sure `.env` file is in the application directory before starting containers:
+For local development with Docker:
 
 ```bash
 docker-compose up -d
@@ -219,54 +209,14 @@ docker-compose up -d
 
 ## GitHub Secrets Configuration
 
-Configure these secrets in your GitHub repository for automated deployment:
+Configure these secrets for CI/CD (tests only - Railway handles deployment):
 
 1. **Go to Repository Settings:**
    - Navigate to Settings → Secrets and variables → Actions
-   - Click "New repository secret"
 
-2. **Add Required Secrets:**
-
-   **AWS/EC2 Secrets:**
-   - `EC2_HOST`: Your EC2 instance public IP or domain
-   - `EC2_USERNAME`: SSH username (usually `ubuntu`)
-   - `EC2_SSH_KEY`: Private SSH key for EC2 access
-   - `EC2_SSH_PORT`: SSH port (default: 22)
-
-   **Docker Secrets:**
-   - `DOCKER_USERNAME`: Docker Hub username
-   - `DOCKER_PASSWORD`: Docker Hub password or access token
-
-   **Application Secrets:**
-   - `NODE_ENV`: `production`
-   - `PORT`: `3000`
-   - `FRONTEND_URL`: `https://csediualumni.com`
-   
-   **MongoDB:**
-   - `MONGODB_URI`: MongoDB connection string
-
-   **JWT:**
-   - `JWT_SECRET`: Secure random string (64+ characters)
-   - `JWT_EXPIRATION`: `7d`
-
-   **Google OAuth:**
-   - `GOOGLE_CLIENT_ID`: From Google Cloud Console
-   - `GOOGLE_CLIENT_SECRET`: From Google Cloud Console
-   - `GOOGLE_CALLBACK_URL`: `https://api.csediualumni.com/api/auth/google/callback`
-
-   **Email/SMTP:**
-   - `SMTP_HOST`: `smtp.gmail.com` or your provider
-   - `SMTP_PORT`: `587`
-   - `SMTP_SECURE`: `false`
-   - `SMTP_USER`: Your email address
-   - `SMTP_PASSWORD`: App password or SMTP password
-   - `MAIL_FROM`: `CSE DIU Alumni <noreply@csediualumni.com>`
-
-3. **Deploy:**
-   Once secrets are configured, push to main branch to trigger deployment:
-   ```bash
-   git push origin main
-   ```
+2. **Optional Secrets for Testing:**
+   - Secrets are primarily needed for Railway deployment
+   - Railway manages environment variables in its dashboard
 
 ## Testing the Setup
 
@@ -385,5 +335,4 @@ After successful setup:
 ## Support
 
 - **Documentation:** [AUTHENTICATION.md](./AUTHENTICATION.md)
-- **Deployment Guide:** [DEPLOYMENT.md](./DEPLOYMENT.md)
 - **Issues:** [GitHub Issues](https://github.com/Softanglez-Coder/csediualumni-services/issues)

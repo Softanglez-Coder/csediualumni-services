@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Deployment script for manual deployment or troubleshooting
-# This script can be run on the EC2 instance
 
 set -e
 

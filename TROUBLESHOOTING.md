@@ -2,16 +2,13 @@
 
 ## Changes Not Reflecting After Deployment
 
-If your code changes aren't reflecting on the live server after pushing and running the pipeline, follow these steps:
+If your code changes aren't reflecting after pushing and running the pipeline, follow these steps:
 
-### Quick Fix (SSH into EC2 and Run Manually)
+### Quick Fix (Manual Deployment)
 
 ```bash
-# SSH into your EC2 instance
-ssh -i your-key.pem ubuntu@your-ec2-ip
-
 # Navigate to the app directory
-cd /home/ubuntu/csediualumni-services
+cd /home/your-user/csediualumni-services
 
 # Stop all containers
 docker-compose down
@@ -34,7 +31,7 @@ docker-compose logs --tail=50
 
 ### Verify the Changes
 
-1. **Check Docker Image on EC2:**
+1. **Check Docker Image:**
 
    ```bash
    # List images with creation dates
@@ -53,11 +50,10 @@ docker-compose logs --tail=50
 3. **Test the Endpoint Directly:**
 
    ```bash
-   # Test locally on EC2
+   # Test locally
    curl http://localhost:3000
-
-   # Test through nginx
-   curl http://api.csediualumni.com
+   
+   # Test production
    curl https://api.csediualumni.com
    ```
 
@@ -95,19 +91,18 @@ docker-compose logs --tail=50
 
 - Hard refresh: Ctrl+Shift+R (Windows/Linux) or Cmd+Shift+R (Mac)
 - Or open in incognito/private mode
-- nginx already has `proxy_cache_bypass` configured
 
 ### Check Pipeline Status
 
 1. Go to your GitHub repository
 2. Click on "Actions" tab
 3. Find the latest workflow run
-4. Make sure all jobs (test, build, deploy) completed successfully
-5. Check the "Deploy to EC2" step logs for any errors
+4. Make sure all jobs (test, build) completed successfully
+5. Check Railway dashboard for deployment status
 
 ### Manual Verification Steps
 
-After deployment, run these commands on your EC2:
+After deployment, run these commands:
 
 ```bash
 # Check Docker Hub for latest image timestamp
@@ -156,25 +151,21 @@ Check these:
 
 2. **Check GitHub Actions workflow:**
    - Make sure the build job succeeded
-   - Make sure the image was pushed to Docker Hub
-   - Make sure the deploy job succeeded
+   - Make sure tests passed
 
-3. **Check EC2 instance:**
-   - Make sure you have enough disk space: `df -h`
-   - Make sure Docker is running: `docker ps`
-   - Check system logs: `journalctl -u docker`
+3. **Check Railway deployment:**
+   - Check Railway dashboard for deployment logs
+   - Verify environment variables are set correctly
+   - Check Railway service logs
 
-4. **Check nginx:**
-   - Make sure nginx is running: `sudo systemctl status nginx`
-   - Check nginx logs: `sudo tail -f /var/log/nginx/api.csediualumni.com.error.log`
-   - Reload nginx config: `sudo nginx -t && sudo systemctl reload nginx`
+4. **Check your server:**
+   - Make sure you have enough resources in Railway
+   - Check Railway metrics and logs
 
 ### Contact Points
 
 If issues persist, provide these details:
 
 - GitHub Actions workflow run URL
-- Docker image creation timestamp from Docker Hub
-- EC2 container logs (`docker-compose logs`)
-- Response from `curl http://localhost:3000` on EC2
-- Response from `curl https://api.csediualumni.com` from external
+- Railway deployment logs
+- Response from `curl https://api.csediualumni.com`
