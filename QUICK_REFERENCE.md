@@ -45,18 +45,15 @@ docker-compose restart        # Restart
 
 ## GitHub Actions Workflow
 
-**Automatic build and test on push to main:**
+**Automatic CI on push to main:**
 
-- ✅ Runs tests
-- 🏗️ Builds Docker image
-- 📦 Pushes to Docker Hub
+- ✅ Runs tests and linting
+- ✅ Builds application
+- 🚀 Railway auto-deploys on success
 
-## Required GitHub Secrets
+## Railway Deployment
 
-```
-DOCKER_USERNAME      # Docker Hub username
-DOCKER_PASSWORD      # Docker Hub token
-```
+Railway handles deployment automatically when you push to main branch.
 
 ## Troubleshooting
 
@@ -91,6 +88,7 @@ docker stats
 ## URLs
 
 - **Local Development:** http://localhost:3000
+- **Production API:** https://api.csediualumni.com
 
 ## Environment Variables
 

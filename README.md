@@ -2,6 +2,8 @@
 
 RESTful API backend for CSE DIU Alumni platform built with NestJS.
 
+**Production URL:** [https://api.csediualumni.com](https://api.csediualumni.com)
+
 ---
 
 ## 📋 Table of Contents
@@ -38,7 +40,8 @@ RESTful API backend for CSE DIU Alumni platform built with NestJS.
 - **Authentication:** JWT, Passport.js, bcrypt
 - **Email:** Nodemailer with SMTP
 - **Runtime:** Node.js 20
-- **Containerization:** Docker & Docker Compose
+- **Containerization:** Docker
+- **Hosting:** [Railway](https://railway.app/)
 - **CI/CD:** GitHub Actions
 
 ## 🚀 Quick Start
@@ -109,15 +112,56 @@ npm run format         # Format code
 
 ## 🌐 Deployment
 
-### Automatic Deployment (CI/CD)
+### Railway Deployment
 
-Push to `main` branch triggers automatic build and test:
+This application is deployed on [Railway](https://railway.app/) at [api.csediualumni.com](https://api.csediualumni.com).
 
+**Automatic Deployment:**
+- Push to `main` branch triggers Railway deployment automatically
+- Railway builds from Dockerfile
+- Environment variables are managed in Railway dashboard
+
+**First-Time Setup:**
+
+1. **Connect to Railway:**
+   - Go to [Railway](https://railway.app/)
+   - Create new project from GitHub repo
+   - Connect `Softanglez-Coder/csediualumni-services`
+
+2. **Configure Environment Variables:**
+   Add these in Railway dashboard:
+   ```
+   NODE_ENV=production
+   PORT=3000
+   MONGODB_URI=your-mongodb-uri
+   JWT_SECRET=your-jwt-secret
+   JWT_EXPIRATION=7d
+   GOOGLE_CLIENT_ID=your-google-client-id
+   GOOGLE_CLIENT_SECRET=your-google-client-secret
+   GOOGLE_CALLBACK_URL=https://api.csediualumni.com/api/auth/google/callback
+   SMTP_HOST=smtp.gmail.com
+   SMTP_PORT=587
+   SMTP_SECURE=false
+   SMTP_USER=your-email@gmail.com
+   SMTP_PASSWORD=your-app-password
+   MAIL_FROM=CSE DIU Alumni <noreply@csediualumni.com>
+   FRONTEND_URL=https://csediualumni.com
+   ```
+
+3. **Configure Custom Domain:**
+   - In Railway project settings
+   - Add custom domain: `api.csediualumni.com`
+   - Update DNS with provided CNAME
+
+4. **Deploy:**
+   - Push to main branch or click "Deploy" in Railway dashboard
+
+### CI/CD Pipeline
+
+Push to `main` branch triggers:
 1. ✅ Runs tests and linting
-2. 🏗️ Builds Docker image
-3. 📦 Pushes to Docker Hub
-
-The Docker image can then be deployed to any container hosting platform (Railway, Heroku, AWS, etc.).
+2. ✅ Builds application
+3. 🚀 Railway auto-deploys on success
 
 ## 📚 Documentation
 
@@ -144,5 +188,7 @@ csediualumni-services/
 - Create an issue on [GitHub](https://github.com/Softanglez-Coder/csediualumni-services/issues)
 
 ---
+
+**Live API:** [https://api.csediualumni.com](https://api.csediualumni.com)
 
 Built with [NestJS](https://nestjs.com/) for CSE DIU Alumni Community

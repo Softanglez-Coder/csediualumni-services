@@ -52,13 +52,16 @@ docker-compose logs --tail=50
    ```bash
    # Test locally
    curl http://localhost:3000
+   
+   # Test production
+   curl https://api.csediualumni.com
    ```
 
 4. **Check from Your Browser:**
    - Open developer tools (F12)
    - Go to Network tab
    - Check "Disable cache"
-   - Visit your application URL
+   - Visit https://api.csediualumni.com
    - Or use Ctrl+Shift+R (Cmd+Shift+R on Mac) for hard refresh
 
 ### Common Issues and Solutions
@@ -95,7 +98,7 @@ docker-compose logs --tail=50
 2. Click on "Actions" tab
 3. Find the latest workflow run
 4. Make sure all jobs (test, build) completed successfully
-5. Check the build step logs for any errors
+5. Check Railway dashboard for deployment status
 
 ### Manual Verification Steps
 
@@ -148,18 +151,21 @@ Check these:
 
 2. **Check GitHub Actions workflow:**
    - Make sure the build job succeeded
-   - Make sure the image was pushed to Docker Hub
+   - Make sure tests passed
 
-3. **Check your server:**
-   - Make sure you have enough disk space: `df -h`
-   - Make sure Docker is running: `docker ps`
-   - Check system logs: `journalctl -u docker`
+3. **Check Railway deployment:**
+   - Check Railway dashboard for deployment logs
+   - Verify environment variables are set correctly
+   - Check Railway service logs
+
+4. **Check your server:**
+   - Make sure you have enough resources in Railway
+   - Check Railway metrics and logs
 
 ### Contact Points
 
 If issues persist, provide these details:
 
 - GitHub Actions workflow run URL
-- Docker image creation timestamp from Docker Hub
-- Container logs (`docker-compose logs`)
-- Response from `curl http://localhost:3000` locally
+- Railway deployment logs
+- Response from `curl https://api.csediualumni.com`

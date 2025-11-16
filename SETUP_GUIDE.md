@@ -153,7 +153,7 @@ SMTP_PASSWORD=your-sendgrid-api-key
 
 5. **Add Authorized Redirect URIs:**
    - For development: `http://localhost:3000/api/auth/google/callback`
-   - For production: Update with your production domain callback URL
+   - For production: `https://api.csediualumni.com/api/auth/google/callback`
 
 6. **Copy Credentials:**
    - Copy the Client ID and Client Secret
@@ -167,32 +167,41 @@ SMTP_PASSWORD=your-sendgrid-api-key
 
 ## Production Deployment
 
-### Environment Setup
+### Railway Deployment
 
-1. **Create .env File:**
+1. **Environment Variables:**
+   Configure these in Railway dashboard:
    ```bash
-   nano .env
-   ```
-   
-   Add production values (see .env.example)
-
-2. **Update Production URLs:**
-   ```bash
-   FRONTEND_URL=https://your-frontend-domain.com
-   GOOGLE_CALLBACK_URL=https://your-api-domain.com/api/auth/google/callback
+   NODE_ENV=production
+   PORT=3000
+   FRONTEND_URL=https://csediualumni.com
+   GOOGLE_CALLBACK_URL=https://api.csediualumni.com/api/auth/google/callback
    MONGODB_URI=mongodb+srv://... (use MongoDB Atlas)
+   JWT_SECRET=$(openssl rand -base64 64 | tr -d '\n')
+   JWT_EXPIRATION=7d
+   SMTP_HOST=smtp.gmail.com
+   SMTP_PORT=587
+   SMTP_SECURE=false
+   SMTP_USER=your-email@gmail.com
+   SMTP_PASSWORD=your-app-password
+   MAIL_FROM=CSE DIU Alumni <noreply@csediualumni.com>
+   GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+   GOOGLE_CLIENT_SECRET=your-client-secret
    ```
 
-3. **Set Secure JWT Secret:**
-   ```bash
-   # Generate a secure random secret
-   JWT_SECRET=$(openssl rand -base64 64 | tr -d '\n')
-   echo "JWT_SECRET=$JWT_SECRET" >> .env
-   ```
+2. **Connect Repository:**
+   - Go to [Railway](https://railway.app/)
+   - Create new project
+   - Connect GitHub repository
+   - Railway will auto-deploy on push to main
+
+3. **Configure Custom Domain:**
+   - In Railway settings, add `api.csediualumni.com`
+   - Update your DNS with provided CNAME
 
 ### Docker Setup
 
-The application uses Docker for deployment. Make sure `.env` file is in the application directory before starting containers:
+For local development with Docker:
 
 ```bash
 docker-compose up -d
@@ -200,50 +209,14 @@ docker-compose up -d
 
 ## GitHub Secrets Configuration
 
-Configure these secrets in your GitHub repository for automated builds:
+Configure these secrets for CI/CD (tests only - Railway handles deployment):
 
 1. **Go to Repository Settings:**
    - Navigate to Settings → Secrets and variables → Actions
-   - Click "New repository secret"
 
-2. **Add Required Secrets:**
-
-   **Docker Secrets:**
-   - `DOCKER_USERNAME`: Docker Hub username
-   - `DOCKER_PASSWORD`: Docker Hub password or access token
-
-   **Application Secrets (for reference):**
-   - `NODE_ENV`: `production`
-   - `PORT`: `3000`
-   - `FRONTEND_URL`: Your frontend domain
-   
-   **MongoDB:**
-   - `MONGODB_URI`: MongoDB connection string
-
-   **JWT:**
-   - `JWT_SECRET`: Secure random string (64+ characters)
-   - `JWT_EXPIRATION`: `7d`
-
-   **Google OAuth:**
-   - `GOOGLE_CLIENT_ID`: From Google Cloud Console
-   - `GOOGLE_CLIENT_SECRET`: From Google Cloud Console
-   - `GOOGLE_CALLBACK_URL`: Your production callback URL
-
-   **Email/SMTP:**
-   - `SMTP_HOST`: `smtp.gmail.com` or your provider
-   - `SMTP_PORT`: `587`
-   - `SMTP_SECURE`: `false`
-   - `SMTP_USER`: Your email address
-   - `SMTP_PASSWORD`: App password or SMTP password
-   - `MAIL_FROM`: Your from address
-
-3. **Build and Deploy:**
-   Once secrets are configured, push to main branch to trigger build:
-   ```bash
-   git push origin main
-   ```
-   
-   The Docker image will be built and pushed to Docker Hub, ready for deployment to your hosting platform.
+2. **Optional Secrets for Testing:**
+   - Secrets are primarily needed for Railway deployment
+   - Railway manages environment variables in its dashboard
 
 ## Testing the Setup
 

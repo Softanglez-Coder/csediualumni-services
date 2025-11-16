@@ -126,19 +126,17 @@ All required environment variables are documented in `.env.example`:
 - `SMTP_HOST` - SMTP server (default: smtp.gmail.com)
 - `SMTP_PORT` - SMTP port (default: 587)
 
-### 9. GitHub Actions Integration
+### 9. CI/CD Integration
 
-**Automated Build and Test:**
-The `.github/workflows/deploy.yml` workflow now:
+**Automated Testing:**
+The `.github/workflows/deploy.yml` workflow:
 1. Runs tests and linting
-2. Builds Docker image
-3. Pushes to Docker Hub
+2. Builds application
 
-**Environment Management:**
-- Script: `scripts/update-env.sh`
-- Automatically creates/updates `.env` file
-- Validates critical variables are set
-- Backs up existing `.env` before updating
+**Railway Deployment:**
+- Railway automatically deploys on push to main
+- Builds from Dockerfile
+- Environment variables managed in Railway dashboard
 
 ### 10. Testing
 
@@ -204,10 +202,10 @@ The `.github/workflows/deploy.yml` workflow now:
 5. Run `npm install` and `npm run start:dev`
 
 ### For Production:
-1. Configure GitHub Secrets (see SETUP_GUIDE.md)
-2. Push to main branch to trigger build
-3. Deploy the Docker image to your preferred hosting platform
-4. Verify API is working
+1. Configure environment variables in Railway dashboard
+2. Connect GitHub repository to Railway
+3. Push to main branch to trigger deployment
+4. Verify API is working: `curl https://api.csediualumni.com`
 
 ### Optional Enhancements:
 - Password reset functionality (structure already in place)
