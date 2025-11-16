@@ -2,8 +2,6 @@
 
 RESTful API backend for CSE DIU Alumni platform built with NestJS.
 
-**Production URL:** [https://api.csediualumni.com](https://api.csediualumni.com)
-
 ---
 
 ## 📋 Table of Contents
@@ -28,13 +26,10 @@ RESTful API backend for CSE DIU Alumni platform built with NestJS.
 - 📧 **Email Service**
   - Email verification system
   - Welcome emails
-  - SMTP support (Gmail, SendGrid, AWS SES)
+  - SMTP support (Gmail, SendGrid, etc.)
 - 🐳 Fully containerized with Docker
 - 🔄 CI/CD pipeline with GitHub Actions
-- 🔒 SSL/HTTPS enabled with Let's Encrypt
 - 📊 Health monitoring and logging
-- 🚀 Auto-deployment to AWS EC2
-- 🌐 Custom domain: **api.csediualumni.com**
 
 ## 🛠️ Tech Stack
 
@@ -45,9 +40,6 @@ RESTful API backend for CSE DIU Alumni platform built with NestJS.
 - **Runtime:** Node.js 20
 - **Containerization:** Docker & Docker Compose
 - **CI/CD:** GitHub Actions
-- **Hosting:** AWS EC2 (Ubuntu 22.04)
-- **Reverse Proxy:** Nginx
-- **SSL:** Let's Encrypt (Certbot)
 
 ## 🚀 Quick Start
 
@@ -119,34 +111,19 @@ npm run format         # Format code
 
 ### Automatic Deployment (CI/CD)
 
-Push to `main` branch triggers automatic deployment:
+Push to `main` branch triggers automatic build and test:
 
 1. ✅ Runs tests and linting
 2. 🏗️ Builds Docker image
 3. 📦 Pushes to Docker Hub
-4. 🚀 Deploys to AWS EC2
-5. ✓ Verifies deployment
 
-### First-Time Setup
-
-1. **Launch EC2 Instance** (Ubuntu 22.04)
-2. **Configure DNS:** Point `api.csediualumni.com` to EC2 IP
-3. **Run Setup Scripts:**
-   ```bash
-   ./scripts/ec2-setup.sh
-   ./scripts/setup-nginx.sh
-   ```
-4. **Configure GitHub Secrets**
-5. **Push to deploy**
-
-For detailed instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
+The Docker image can then be deployed to any container hosting platform (Railway, Heroku, AWS, etc.).
 
 ## 📚 Documentation
 
 - 📖 [AUTHENTICATION.md](./AUTHENTICATION.md) - Authentication API reference
 - 🔧 [SETUP_GUIDE.md](./SETUP_GUIDE.md) - Complete setup guide
 - 📋 [IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md) - Implementation overview
-- 📖 [DEPLOYMENT.md](./DEPLOYMENT.md) - Complete deployment guide
 - 🔧 [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) - Common commands
 - 🐳 [Dockerfile](./Dockerfile) - Docker configuration
 - ⚙️ [CI/CD Workflow](.github/workflows/deploy.yml) - GitHub Actions
@@ -165,10 +142,7 @@ csediualumni-services/
 ## 🐛 Issues & Support
 
 - Create an issue on [GitHub](https://github.com/Softanglez-Coder/csediualumni-services/issues)
-- Check [DEPLOYMENT.md](./DEPLOYMENT.md) for troubleshooting
 
 ---
-
-**Live API:** [https://api.csediualumni.com](https://api.csediualumni.com)
 
 Built with [NestJS](https://nestjs.com/) for CSE DIU Alumni Community

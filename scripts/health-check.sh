@@ -2,7 +2,7 @@
 
 # Health check script for monitoring
 
-APP_URL="${APP_URL:-https://api.csediualumni.com}"
+APP_URL="${APP_URL:-http://localhost:3000}"
 HEALTH_ENDPOINT="${HEALTH_ENDPOINT:-/}"
 
 echo "Checking application health at $APP_URL$HEALTH_ENDPOINT"

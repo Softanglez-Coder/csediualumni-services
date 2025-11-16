@@ -100,7 +100,7 @@ All endpoints are prefixed with `/api/auth/`:
 
 **SETUP_GUIDE.md:**
 - MongoDB setup (local and Atlas)
-- Email/SMTP configuration (Gmail, SendGrid, AWS SES)
+- Email/SMTP configuration (Gmail, SendGrid, etc.)
 - Google OAuth setup
 - Production deployment guide
 - GitHub Secrets configuration
@@ -128,18 +128,15 @@ All required environment variables are documented in `.env.example`:
 
 ### 9. GitHub Actions Integration
 
-**Automated Deployment:**
+**Automated Build and Test:**
 The `.github/workflows/deploy.yml` workflow now:
 1. Runs tests and linting
 2. Builds Docker image
 3. Pushes to Docker Hub
-4. Updates environment variables on EC2
-5. Deploys to EC2
-6. Verifies deployment
 
 **Environment Management:**
 - Script: `scripts/update-env.sh`
-- Automatically creates/updates `.env` file on EC2
+- Automatically creates/updates `.env` file
 - Validates critical variables are set
 - Backs up existing `.env` before updating
 
@@ -208,9 +205,9 @@ The `.github/workflows/deploy.yml` workflow now:
 
 ### For Production:
 1. Configure GitHub Secrets (see SETUP_GUIDE.md)
-2. Push to main branch to trigger deployment
-3. Monitor deployment in GitHub Actions
-4. Verify API is working: `curl https://api.csediualumni.com`
+2. Push to main branch to trigger build
+3. Deploy the Docker image to your preferred hosting platform
+4. Verify API is working
 
 ### Optional Enhancements:
 - Password reset functionality (structure already in place)

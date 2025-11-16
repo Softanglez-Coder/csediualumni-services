@@ -1,8 +1,7 @@
 #!/bin/bash
 
-# Script to update environment variables on EC2 instance
-# This script should be run on the EC2 instance
-# It reads environment variables from GitHub Secrets and updates the .env file
+# Script to update environment variables
+# It reads environment variables and updates the .env file
 
 set -e
 
