@@ -8,7 +8,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { AuthService, GoogleUser } from './auth.service';
 import {
   RegisterDto,
   VerifyEmailDto,
@@ -61,7 +61,7 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
   async googleAuthCallback(@Request() req: RequestWithUser) {
-    const result = await this.authService.googleLogin(req as any);
+    const result = await this.authService.googleLogin(req as GoogleUser);
     const frontendUrl = this.configService.get<string>('frontend.url');
 
     // Redirect to frontend with token

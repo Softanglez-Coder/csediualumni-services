@@ -141,24 +141,29 @@ export class AuthService {
     };
   }
 
-  async googleLogin(req: any) {
+  async googleLogin(req: GoogleUser) {
     if (!req.user) {
       throw new UnauthorizedException('No user from Google');
     }
 
     const user = await this.usersService.createOrUpdateGoogleUser(
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       req.user.googleId,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       req.user.email,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       req.user.firstName,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       req.user.lastName,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       req.user.profilePicture,
     );
 
     return this.login(user);
   }
+}
+
+export interface GoogleUser {
+  user: {
+    googleId: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    profilePicture: string;
+  };
 }
