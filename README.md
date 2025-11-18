@@ -22,6 +22,7 @@ RESTful API backend for CSE DIU Alumni platform built with NestJS.
   - Google OAuth 2.0 integration
   - JWT-based authentication
   - Secure password hashing with bcrypt
+  - System admin bot user for automated operations
 - 🗄️ **MongoDB Database Integration**
   - User management with Mongoose
   - Indexed schemas for performance
@@ -165,10 +166,11 @@ Push to `main` branch triggers:
 
 ## 📚 Documentation
 
-- 📖 [AUTHENTICATION.md](./AUTHENTICATION.md) - Authentication API reference
-- 🔧 [SETUP_GUIDE.md](./SETUP_GUIDE.md) - Complete setup guide
-- 📋 [IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md) - Implementation overview
-- 🔧 [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) - Common commands
+- 📖 [AUTHENTICATION.md](./docs/AUTHENTICATION.md) - Authentication API reference
+- 🤖 [SYSTEM_ADMIN.md](./docs/SYSTEM_ADMIN.md) - System admin bot user guide
+- 🔧 [SETUP_GUIDE.md](./docs/SETUP_GUIDE.md) - Complete setup guide
+- 📋 [IMPLEMENTATION_SUMMARY.md](./docs/IMPLEMENTATION_SUMMARY.md) - Implementation overview
+- 🔧 [QUICK_REFERENCE.md](./docs/QUICK_REFERENCE.md) - Common commands
 - 🐳 [Dockerfile](./Dockerfile) - Docker configuration
 - ⚙️ [CI/CD Workflow](.github/workflows/deploy.yml) - GitHub Actions
 

@@ -48,4 +48,11 @@ export default () => ({
       sandbox: process.env.SSLCOMMERZ_SANDBOX === 'true' || true,
     },
   },
+
+  systemAdmin: {
+    email: process.env.SYSTEM_ADMIN_EMAIL || 'system-admin@csediualumni.com',
+    password: process.env.SYSTEM_ADMIN_PASSWORD || '',
+    firstName: process.env.SYSTEM_ADMIN_FIRST_NAME || 'System',
+    lastName: process.env.SYSTEM_ADMIN_LAST_NAME || 'Administrator',
+  },
 });

@@ -165,6 +165,43 @@ SMTP_PASSWORD=your-sendgrid-api-key
    GOOGLE_CALLBACK_URL=http://localhost:3000/api/auth/google/callback
    ```
 
+## System Admin Bot User
+
+The application includes a system admin bot user that is automatically created on startup for automated operations and emergency access.
+
+### Configuration
+
+**Required for production, optional for development:**
+
+```bash
+SYSTEM_ADMIN_EMAIL=system-admin@csediualumni.com
+SYSTEM_ADMIN_PASSWORD=your-secure-password-here
+SYSTEM_ADMIN_FIRST_NAME=System
+SYSTEM_ADMIN_LAST_NAME=Administrator
+```
+
+### Security Best Practices
+
+1. **Use a strong password** - minimum 16 characters
+2. **Keep it secret** - never commit to version control
+3. **Rotate regularly** - change password every 90 days in production
+4. **Environment-specific** - use different credentials per environment
+
+### Example
+
+```bash
+# Generate a secure password
+openssl rand -base64 32
+
+# Add to .env
+SYSTEM_ADMIN_EMAIL=system-admin@csediualumni.com
+SYSTEM_ADMIN_PASSWORD=A$tr0ng!P@ssw0rd#2024
+SYSTEM_ADMIN_FIRST_NAME=System
+SYSTEM_ADMIN_LAST_NAME=Administrator
+```
+
+For more details, see [SYSTEM_ADMIN.md](./SYSTEM_ADMIN.md).
+
 ## Production Deployment
 
 ### Railway Deployment
