@@ -42,6 +42,27 @@ export class User {
   @Prop({ default: null })
   profilePicture?: string;
 
+  @Prop({ default: null })
+  phoneNumber?: string;
+
+  @Prop({ default: null })
+  batch?: string;
+
+  @Prop({ default: null })
+  dateOfBirth?: Date;
+
+  @Prop({ default: null })
+  company?: string;
+
+  @Prop({ default: null })
+  designation?: string;
+
+  @Prop({ default: null })
+  passingYear?: number;
+
+  @Prop({ default: null })
+  educationLevel?: string;
+
   @Prop({ default: true })
   isActive: boolean;
 

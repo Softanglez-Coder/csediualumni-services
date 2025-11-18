@@ -35,4 +35,17 @@ export default () => ({
   frontend: {
     url: process.env.FRONTEND_URL || 'http://localhost:4200',
   },
+
+  api: {
+    url: process.env.API_URL || 'http://localhost:3000',
+  },
+
+  payment: {
+    gateway: process.env.PAYMENT_GATEWAY || 'sslcommerz',
+    sslcommerz: {
+      storeId: process.env.SSLCOMMERZ_STORE_ID || '',
+      storePassword: process.env.SSLCOMMERZ_STORE_PASSWORD || '',
+      sandbox: process.env.SSLCOMMERZ_SANDBOX === 'true' || true,
+    },
+  },
 });
