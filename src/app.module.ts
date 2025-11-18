@@ -6,6 +6,8 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { MailModule } from './mail/mail.module';
+import { MembershipRequestModule } from './membership-request/membership-request.module';
+import { PaymentModule } from './payment/payment.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -25,6 +27,8 @@ import configuration from './config/configuration';
     AuthModule,
     UsersModule,
     MailModule,
+    MembershipRequestModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -21,6 +21,11 @@ export class MailService {
       'email-verification.html',
       'password-reset.html',
       'welcome.html',
+      'membership-draft.html',
+      'membership-information-verified.html',
+      'membership-payment-required.html',
+      'membership-approved.html',
+      'membership-rejected.html',
     ];
 
     templateFiles.forEach((file) => {
@@ -109,6 +114,56 @@ export class MailService {
     await this.mailerService.sendMail({
       to: email,
       subject: 'Welcome to CSE DIU Alumni!',
+      html,
+    });
+  }
+
+  async sendMembershipStatusEmail(
+    email: string,
+    firstName: string,
+    status: string,
+    rejectionReason?: string,
+    paymentUrl?: string,
+  ): Promise<void> {
+    const templateMap: Record<string, string> = {
+      draft: 'membership-draft.html',
+      information_verified: 'membership-information-verified.html',
+      payment_required: 'membership-payment-required.html',
+      approved: 'membership-approved.html',
+      rejected: 'membership-rejected.html',
+    };
+
+    const subjectMap: Record<string, string> = {
+      draft: 'Membership Request Received - CSE DIU Alumni',
+      information_verified: 'Information Verified - CSE DIU Alumni',
+      payment_required: 'Payment Required - CSE DIU Alumni',
+      approved: 'Membership Approved - Welcome! 🎉',
+      rejected: 'Membership Request Update - CSE DIU Alumni',
+    };
+
+    const templateFile = templateMap[status];
+    if (!templateFile) {
+      console.error(`No template found for status: ${status}`);
+      return;
+    }
+
+    const template = this.templates.get(templateFile);
+    if (!template) {
+      console.error(`Template ${templateFile} not found`);
+      return;
+    }
+
+    const variables: Record<string, string> = {
+      firstName,
+      rejectionReason: rejectionReason || '',
+      paymentUrl: paymentUrl || '',
+    };
+
+    const html = this.replaceVariables(template, variables);
+
+    await this.mailerService.sendMail({
+      to: email,
+      subject: subjectMap[status],
       html,
     });
   }
