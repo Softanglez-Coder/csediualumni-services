@@ -6,6 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './schemas/user.schema';
+import { UserRole } from '../common/enums/user-role.enum';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 
@@ -140,5 +141,47 @@ export class UsersService {
     });
 
     return user.save();
+  }
+
+  async ensureSystemAdminExists(
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string,
+  ): Promise<UserDocument> {
+    let systemAdmin = await this.userModel
+      .findOne({ email: email.toLowerCase(), isSystemBot: true })
+      .exec();
+
+    if (systemAdmin) {
+      // Update password if it has changed
+      const hashedPassword = await bcrypt.hash(password, 10);
+      if (systemAdmin.password !== hashedPassword) {
+        systemAdmin.password = hashedPassword;
+      }
+      // Ensure system admin always has correct settings
+      systemAdmin.firstName = firstName;
+      systemAdmin.lastName = lastName;
+      systemAdmin.isActive = true;
+      systemAdmin.isEmailVerified = true;
+      systemAdmin.roles = [UserRole.SYSTEM_ADMIN];
+      return systemAdmin.save();
+    }
+
+    // Create new system admin bot user
+    const hashedPassword = await bcrypt.hash(password, 10);
+    systemAdmin = new this.userModel({
+      email: email.toLowerCase(),
+      password: hashedPassword,
+      firstName,
+      lastName,
+      authProvider: 'local',
+      isEmailVerified: true,
+      isActive: true,
+      isSystemBot: true,
+      roles: [UserRole.SYSTEM_ADMIN],
+    });
+
+    return systemAdmin.save();
   }
 }
