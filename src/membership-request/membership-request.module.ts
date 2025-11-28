@@ -9,6 +9,7 @@ import {
 import { UsersModule } from '../users/users.module';
 import { PaymentModule } from '../payment/payment.module';
 import { MailModule } from '../mail/mail.module';
+import { FinancialTransactionModule } from '../financial-transaction/financial-transaction.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { MailModule } from '../mail/mail.module';
     UsersModule,
     PaymentModule,
     MailModule,
+    FinancialTransactionModule,
   ],
   controllers: [MembershipRequestController],
   providers: [MembershipRequestService],

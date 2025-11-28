@@ -3,6 +3,7 @@ import { MembershipRequestService } from '../membership-request.service';
 import { UsersService } from '../../users/users.service';
 import { PaymentService } from '../../payment/payment.service';
 import { MailService } from '../../mail/mail.service';
+import { FinancialTransactionService } from '../../financial-transaction/financial-transaction.service';
 import { getModelToken } from '@nestjs/mongoose';
 import { MembershipRequest } from '../schemas/membership-request.schema';
 import { MembershipStatus } from '../enums/membership-status.enum';
@@ -17,6 +18,7 @@ describe('MembershipRequestService', () => {
   let usersService: UsersService;
   let paymentService: PaymentService;
   let mailService: MailService;
+  let financialTransactionService: FinancialTransactionService;
 
   const mockCompleteUser = {
     _id: '507f1f77bcf86cd799439011',
@@ -88,6 +90,15 @@ describe('MembershipRequestService', () => {
     sendMembershipStatusEmail: jest.fn(),
   };
 
+  const mockFinancialTransactionService = {
+    createIncomeTransaction: jest.fn().mockResolvedValue({
+      _id: '507f1f77bcf86cd799439014',
+      type: 'income',
+      amount: 1000,
+      status: 'approved',
+    }),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -108,6 +119,10 @@ describe('MembershipRequestService', () => {
           provide: MailService,
           useValue: mockMailService,
         },
+        {
+          provide: FinancialTransactionService,
+          useValue: mockFinancialTransactionService,
+        },
       ],
     }).compile();
 
@@ -115,6 +130,9 @@ describe('MembershipRequestService', () => {
     usersService = module.get<UsersService>(UsersService);
     paymentService = module.get<PaymentService>(PaymentService);
     mailService = module.get<MailService>(MailService);
+    financialTransactionService = module.get<FinancialTransactionService>(
+      FinancialTransactionService,
+    );
 
     jest.clearAllMocks();
   });
@@ -319,10 +337,12 @@ describe('MembershipRequestService', () => {
     it('should update payment status on successful verification', async () => {
       const request = {
         ...mockMembershipRequest,
+        paymentAmount: 1000,
         save: jest.fn().mockResolvedValue(mockMembershipRequest),
       };
       mockMembershipRequestModel.findById.mockResolvedValue(request);
-      
+      mockUsersService.findById.mockResolvedValue(mockCompleteUser);
+
       // Reset the mock to return successful verification
       mockPaymentService.getGateway.mockReturnValue({
         verifyPayment: jest.fn().mockResolvedValue({
@@ -341,6 +361,15 @@ describe('MembershipRequestService', () => {
       expect(request.paymentStatus).toBe('VALID');
       expect(request.paymentTransactionId).toBe('TXN123');
       expect(request.save).toHaveBeenCalled();
+      expect(mockFinancialTransactionService.createIncomeTransaction).toHaveBeenCalledWith({
+        amount: 1000,
+        description: `Membership fee payment - ${mockCompleteUser.firstName} ${mockCompleteUser.lastName}`,
+        category: 'Membership Fee',
+        referenceNumber: 'TXN123',
+        transactionDate: expect.any(Date),
+        createdBy: request.userId.toString(),
+        payer: `${mockCompleteUser.firstName} ${mockCompleteUser.lastName}`,
+      });
     });
   });
 

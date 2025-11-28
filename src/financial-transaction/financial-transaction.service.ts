@@ -502,4 +502,41 @@ export class FinancialTransactionService {
 
     await this.transactionModel.findByIdAndDelete(transactionId);
   }
+
+  /**
+   * Creates an income transaction programmatically (e.g., for membership fee payments)
+   * This method bypasses role checks and is meant to be called internally
+   */
+  async createIncomeTransaction(params: {
+    amount: number;
+    description: string;
+    category?: string;
+    referenceNumber?: string;
+    transactionDate: Date;
+    createdBy: string;
+    payer?: string;
+  }): Promise<FinancialTransactionDocument> {
+    const transaction = new this.transactionModel({
+      type: TransactionType.INCOME,
+      amount: params.amount,
+      description: params.description,
+      currency: 'BDT',
+      category: params.category || 'Membership Fee',
+      referenceNumber: params.referenceNumber,
+      transactionDate: params.transactionDate,
+      status: TransactionStatus.APPROVED,
+      createdBy: new Types.ObjectId(params.createdBy),
+      payer: params.payer,
+      statusHistory: [
+        {
+          status: TransactionStatus.APPROVED,
+          changedAt: new Date(),
+          changedBy: params.createdBy,
+          note: 'Auto-created from membership fee payment',
+        },
+      ],
+    });
+
+    return transaction.save();
+  }
 }
