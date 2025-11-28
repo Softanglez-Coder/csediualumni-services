@@ -69,6 +69,9 @@ export class User {
   @Prop({ default: false })
   isSystemBot: boolean;
 
+  @Prop({ default: null, unique: true, sparse: true })
+  membershipId?: string;
+
   @Prop({
     type: [String],
     enum: Object.values(UserRole),
