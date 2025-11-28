@@ -181,6 +181,11 @@ export class MembershipRequestService {
       }
     }
 
+    // Handle approval - add Member role and generate membership ID
+    if (updateDto.status === MembershipStatus.APPROVED) {
+      await this.usersService.approveMembership(request.userId.toString());
+    }
+
     // Add to status history
     request.statusHistory.push({
       status: updateDto.status,

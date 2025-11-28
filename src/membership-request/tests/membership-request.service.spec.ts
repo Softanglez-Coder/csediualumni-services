@@ -65,6 +65,7 @@ describe('MembershipRequestService', () => {
 
   const mockUsersService = {
     findById: jest.fn(),
+    approveMembership: jest.fn(),
   };
 
   const mockPaymentService = {
@@ -262,6 +263,32 @@ describe('MembershipRequestService', () => {
       expect(mockPaymentService.getGateway).toHaveBeenCalled();
       expect(request.paymentUrl).toBe('https://payment.example.com/pay');
       expect(request.paymentTransactionId).toBe('TXN123');
+    });
+
+    it('should call approveMembership when status is APPROVED', async () => {
+      const request = {
+        ...mockMembershipRequest,
+        status: MembershipStatus.INFORMATION_VERIFIED,
+        statusHistory: [],
+        save: jest.fn().mockResolvedValue(mockMembershipRequest),
+      };
+      mockMembershipRequestModel.findById.mockResolvedValue(request);
+      mockUsersService.findById.mockResolvedValue(mockCompleteUser);
+      mockUsersService.approveMembership.mockResolvedValue({
+        ...mockCompleteUser,
+        roles: ['guest', 'member'],
+        membershipId: 'M00001',
+      });
+
+      await service.updateMembershipStatus(
+        '507f1f77bcf86cd799439013',
+        { status: MembershipStatus.APPROVED },
+        'admin123',
+      );
+
+      expect(mockUsersService.approveMembership).toHaveBeenCalledWith(
+        request.userId.toString(),
+      );
     });
   });
 

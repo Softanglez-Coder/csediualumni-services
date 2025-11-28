@@ -184,4 +184,76 @@ export class UsersService {
 
     return systemAdmin.save();
   }
+
+  /**
+   * Generates a unique membership ID following the pattern M<5 digits>
+   * @returns A unique membership ID string (e.g., M00001, M00002, etc.)
+   */
+  private async generateMembershipId(): Promise<string> {
+    // Find the highest existing membership ID
+    const lastMember = await this.userModel
+      .findOne({ membershipId: { $regex: /^M\d{5}$/ } })
+      .sort({ membershipId: -1 })
+      .exec();
+
+    let nextSequence = 1;
+    if (lastMember?.membershipId) {
+      // Validate format and extract the numeric part from the membership ID (e.g., "M00001" -> 1)
+      const match = lastMember.membershipId.match(/^M(\d{5})$/);
+      if (match) {
+        const numericPart = parseInt(match[1], 10);
+        if (!isNaN(numericPart)) {
+          nextSequence = numericPart + 1;
+        }
+      }
+    }
+
+    // Format as M followed by 5-digit zero-padded number
+    return `M${nextSequence.toString().padStart(5, '0')}`;
+  }
+
+  /**
+   * Adds the Member role to a user and generates a membership ID
+   * Called when a membership request is approved
+   * @param userId - The ID of the user to update
+   * @returns The updated user document
+   */
+  async approveMembership(userId: string): Promise<UserDocument> {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Add Member role if not already present
+    if (!user.roles.includes(UserRole.MEMBER)) {
+      user.roles.push(UserRole.MEMBER);
+    }
+
+    // Generate and assign membership ID if not already assigned
+    if (!user.membershipId) {
+      // Retry mechanism to handle race conditions
+      const maxRetries = 3;
+      for (let attempt = 0; attempt < maxRetries; attempt++) {
+        try {
+          user.membershipId = await this.generateMembershipId();
+          return await user.save();
+        } catch (error: unknown) {
+          // Check for MongoDB duplicate key error (code 11000)
+          if (
+            error &&
+            typeof error === 'object' &&
+            'code' in error &&
+            error.code === 11000 &&
+            attempt < maxRetries - 1
+          ) {
+            // Retry with a new ID
+            continue;
+          }
+          throw error;
+        }
+      }
+    }
+
+    return user.save();
+  }
 }
