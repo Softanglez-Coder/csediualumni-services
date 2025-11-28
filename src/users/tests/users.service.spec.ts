@@ -152,5 +152,78 @@ describe('UsersService - Membership Approval', () => {
 
       expect(mockUser.membershipId).toBe('M00010');
     });
+
+    it('should retry on duplicate key error and succeed', async () => {
+      const mockUser = {
+        _id: 'user123',
+        roles: [UserRole.GUEST],
+        membershipId: undefined,
+        save: jest.fn(),
+      };
+      
+      // First save throws duplicate key error, second succeeds
+      const duplicateKeyError = { code: 11000, message: 'Duplicate key error' };
+      mockUser.save
+        .mockRejectedValueOnce(duplicateKeyError)
+        .mockResolvedValueOnce(mockUser);
+      
+      mockFindById.mockReturnValue({ exec: jest.fn().mockResolvedValue(mockUser) });
+      mockFindOne.mockReturnValue({
+        sort: jest.fn().mockReturnValue({
+          exec: jest.fn().mockResolvedValue(null),
+        }),
+      });
+
+      const result = await service.approveMembership('user123');
+
+      expect(mockUser.save).toHaveBeenCalledTimes(2);
+      expect(result).toBeDefined();
+    });
+
+    it('should throw error after max retries on persistent duplicate key error', async () => {
+      const mockUser = {
+        _id: 'user123',
+        roles: [UserRole.GUEST],
+        membershipId: undefined,
+        save: jest.fn(),
+      };
+      
+      const duplicateKeyError = { code: 11000, message: 'Duplicate key error' };
+      mockUser.save.mockRejectedValue(duplicateKeyError);
+      
+      mockFindById.mockReturnValue({ exec: jest.fn().mockResolvedValue(mockUser) });
+      mockFindOne.mockReturnValue({
+        sort: jest.fn().mockReturnValue({
+          exec: jest.fn().mockResolvedValue(null),
+        }),
+      });
+
+      await expect(service.approveMembership('user123')).rejects.toEqual(duplicateKeyError);
+      expect(mockUser.save).toHaveBeenCalledTimes(3); // max retries
+    });
+
+    it('should handle invalid membershipId format gracefully', async () => {
+      const mockUser = {
+        _id: 'user123',
+        roles: [UserRole.GUEST],
+        membershipId: undefined,
+        save: mockSave,
+      };
+      const existingMemberWithInvalidId = {
+        membershipId: 'INVALID',
+      };
+      mockFindById.mockReturnValue({ exec: jest.fn().mockResolvedValue(mockUser) });
+      mockFindOne.mockReturnValue({
+        sort: jest.fn().mockReturnValue({
+          exec: jest.fn().mockResolvedValue(existingMemberWithInvalidId),
+        }),
+      });
+      mockSave.mockResolvedValue(mockUser);
+
+      await service.approveMembership('user123');
+
+      // Should default to M00001 when existing ID is invalid
+      expect(mockUser.membershipId).toBe('M00001');
+    });
   });
 });
