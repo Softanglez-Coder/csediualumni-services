@@ -16,6 +16,7 @@ import { UserDocument } from '../users/schemas/user.schema';
 import { UpdateMembershipStatusDto } from './dto/membership-request.dto';
 import { PaymentService } from '../payment/payment.service';
 import { MailService } from '../mail/mail.service';
+import { FinancialTransactionService } from '../financial-transaction/financial-transaction.service';
 
 @Injectable()
 export class MembershipRequestService {
@@ -25,6 +26,7 @@ export class MembershipRequestService {
     private usersService: UsersService,
     private paymentService: PaymentService,
     private mailService: MailService,
+    private financialTransactionService: FinancialTransactionService,
   ) {}
 
   private isProfileComplete(user: UserDocument): boolean {
@@ -264,6 +266,28 @@ export class MembershipRequestService {
 
     request.paymentStatus = verificationResponse.status;
     request.paymentTransactionId = transactionId;
+
+    // Create income transaction for the membership fee payment
+    if (
+      verificationResponse.status === 'VALID' &&
+      request.paymentAmount &&
+      request.paymentAmount > 0
+    ) {
+      const user = await this.usersService.findById(request.userId.toString());
+      const payerName = user
+        ? `${user.firstName} ${user.lastName}`
+        : 'Unknown Member';
+
+      await this.financialTransactionService.createIncomeTransaction({
+        amount: request.paymentAmount,
+        description: `Membership fee payment - ${payerName}`,
+        category: 'Membership Fee',
+        referenceNumber: transactionId,
+        transactionDate: new Date(),
+        createdBy: request.userId.toString(),
+        payer: payerName,
+      });
+    }
 
     return request.save();
   }
