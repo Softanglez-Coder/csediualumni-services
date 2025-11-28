@@ -58,6 +58,7 @@ export class UpdateTransactionDto {
 
   @IsOptional()
   @IsString()
+  @IsNotEmpty()
   description?: string;
 
   @IsOptional()

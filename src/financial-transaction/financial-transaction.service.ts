@@ -434,6 +434,9 @@ export class FinancialTransactionService {
             $match: {
               status: TransactionStatus.PENDING_REVIEW,
               type: TransactionType.EXPENSE,
+              ...(Object.keys(dateQuery).length > 0 && {
+                transactionDate: dateQuery,
+              }),
             },
           },
           {
