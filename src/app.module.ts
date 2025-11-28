@@ -8,6 +8,7 @@ import { UsersModule } from './users/users.module';
 import { MailModule } from './mail/mail.module';
 import { MembershipRequestModule } from './membership-request/membership-request.module';
 import { PaymentModule } from './payment/payment.module';
+import { FinancialTransactionModule } from './financial-transaction/financial-transaction.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -29,6 +30,7 @@ import configuration from './config/configuration';
     MailModule,
     MembershipRequestModule,
     PaymentModule,
+    FinancialTransactionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
