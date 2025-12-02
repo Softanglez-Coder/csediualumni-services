@@ -1,0 +1,138 @@
+{
+  "info": {
+    "name": "CSEDI Alumni - Auth0 Testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "auth0_domain",
+      "value": "csediualumni.us.auth0.com"
+    },
+    {
+      "key": "api_audience",
+      "value": "https://api.csedialumni.com"
+    },
+    {
+      "key": "client_id",
+      "value": "YOUR_CLIENT_ID"
+    },
+    {
+      "key": "test_email",
+      "value": "test@csedialumni.com"
+    },
+    {
+      "key": "test_password",
+      "value": "TestPassword123!"
+    },
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth0",
+      "item": [
+        {
+          "name": "Get Access Token (Password Grant)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "pm.collectionVariables.set('access_token', response.access_token);",
+                  "console.log('Token saved:', response.access_token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"grant_type\": \"password\",\n  \"username\": \"{{test_email}}\",\n  \"password\": \"{{test_password}}\",\n  \"audience\": \"{{api_audience}}\",\n  \"client_id\": \"{{client_id}}\",\n  \"scope\": \"openid profile email\"\n}"
+            },
+            "url": {
+              "raw": "https://{{auth0_domain}}/oauth/token",
+              "protocol": "https",
+              "host": ["{{auth0_domain}}"],
+              "path": ["oauth", "token"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "API Endpoints",
+      "item": [
+        {
+          "name": "Health Check (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/health",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "health"]
+            }
+          }
+        },
+        {
+          "name": "Get Profile (Protected)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/profile",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User (Protected)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "me"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
