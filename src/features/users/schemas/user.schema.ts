@@ -69,8 +69,7 @@ export class User {
 export const UserSchema = SchemaFactory.createForClass(User);
 
 // Indexes for better query performance
-UserSchema.index({ email: 1 });
-UserSchema.index({ auth0Id: 1 });
+// Note: email and auth0Id indexes are created automatically by 'unique: true'
 UserSchema.index({ graduationYear: 1, batch: 1 });
 UserSchema.index({ roles: 1 });
 
